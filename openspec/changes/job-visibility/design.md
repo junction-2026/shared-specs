@@ -16,19 +16,19 @@
 
 ## Compatibility classification (every place the touched endpoints and objects are used)
 
-| Spec location (canonical, shared-specs @ 07b1fce) | Change | Class |
+| Spec location (canonical, shared-specs @ 5981c9f) | Change | Class |
 |---|---|---|
-| `openspec/specs/analysis-jobs-api/spec.md:16` Create job | new optional request member `public` | shared-additive |
-| `openspec/specs/analysis-jobs-api/spec.md:23` Create job validation | 422 for invalid `public` (new condition, existing code) | shared-additive |
-| `openspec/specs/analysis-jobs-api/spec.md:234` Scrape request validation | unchanged; `public` is checked alongside it | none |
-| `openspec/specs/analysis-jobs-api/spec.md:45` Job object | new member `public` (boolean, always present) | shared-additive |
-| `openspec/specs/analysis-jobs-api/spec.md:153` Get job | returns unlisted jobs like any other | none |
-| `openspec/specs/analysis-jobs-api/spec.md:160` List jobs | omits jobs with `public: false` | shared-additive (only jobs created with the new member are affected; existing clients never create them) |
-| `openspec/specs/analysis-jobs-api/spec.md:167` Cancel job | unchanged for unlisted jobs | none |
-| `openspec/specs/analysis-jobs-api/spec.md:499` Persisted jobs in listing and cancel | listing includes persisted public jobs only | shared-additive |
-| `openspec/specs/analysis-jobs-api/spec.md:510` History retention | unchanged; retention removes unlisted jobs like others | none |
-| `openspec/specs/analysis-job-events/spec.md:23,48,353,364,371` `data.job` in `job.snapshot` and terminal events | carries the new Job member `public`; events still equal the REST Job | shared-additive (no spec change) |
-| `openspec/specs/api-conventions/spec.md:41` Cursor pagination | unchanged; applies to the filtered list | none |
+| `openspec/specs/analysis-jobs-api/spec.md:15` Create job | new optional request member `public` | shared-additive |
+| `openspec/specs/analysis-jobs-api/spec.md:22` Create job validation | 422 for invalid `public` (new condition, existing code) | shared-additive |
+| `openspec/specs/analysis-jobs-api/spec.md:233` Scrape request validation | unchanged; `public` is checked alongside it | none |
+| `openspec/specs/analysis-jobs-api/spec.md:44` Job object | new member `public` (boolean, always present) | shared-additive |
+| `openspec/specs/analysis-jobs-api/spec.md:152` Get job | returns unlisted jobs like any other | none |
+| `openspec/specs/analysis-jobs-api/spec.md:159` List jobs | omits jobs with `public: false` | shared-additive (only jobs created with the new member are affected; existing clients never create them) |
+| `openspec/specs/analysis-jobs-api/spec.md:166` Cancel job | unchanged for unlisted jobs | none |
+| `openspec/specs/analysis-jobs-api/spec.md:498` Persisted jobs in listing and cancel | listing includes persisted public jobs only | shared-additive |
+| `openspec/specs/analysis-jobs-api/spec.md:509` History retention | unchanged; retention removes unlisted jobs like others | none |
+| `openspec/specs/analysis-job-events/spec.md:23,48,353,364` `data.job` in `job.snapshot` and terminal events | carries the new Job member `public`; events still equal the REST Job | shared-additive (no spec change) |
+| `openspec/specs/api-conventions/spec.md:40` Cursor pagination | unchanged; applies to the filtered list | none |
 
 No member is removed or renamed, no type or status of an existing case changes: there is **no shared-breaking change**
 and no client migration is required. Tolerant readers (api-conventions) ignore `public` until they use it.
@@ -43,3 +43,9 @@ and no client migration is required. Tolerant readers (api-conventions) ignore `
   job; the spec states that no access control is implied.
 - Jobs are reachable by id; ids are not guessable sequences in the backend (opaque ids), but this change does not
   promise unguessability.
+
+## Concurrent changes
+- `term-context` (#49) also deltas `analysis-jobs-api`, but only the requirement "Wikipedia quotes for clients";
+  no requirement header is shared with this change, so archive order does not matter.
+- `wikipedia-cross-language` (#47) touches `wikipedia-lookup-result` only. Its frontend child edits
+  `src/api/types.ts` and the locale files too; the members and keys added here are disjoint from its own.

@@ -1,7 +1,7 @@
 # Job visibility: unlisted analysis jobs (junction-2026/project#53)
 
-Based on backend @ 0e6833bfa5f54cab43426bf15f74a65307afdfa0, frontend @ 4aab58091e8fa5edbe79f0d6f35f0fb24cec8ad8,
-project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 07b1fce6c316aa2ddf926ffab423dd721fb5b9b4.
+Based on backend @ d03c1cc4ce1f941ef37a4b715c2de081ac65f379, frontend @ 8df0521d82acc7d94d6a90dd1751b1320f81b85f,
+project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 5981c9fdec37dc8664689f5ff2595ae797da618a.
 
 ## Why
 Every analysis job appears in `GET /api/v1/jobs` and therefore in the frontend History for everyone
@@ -31,4 +31,12 @@ being listed, while still being able to share it by its URL.
   SQLite and in-memory stores.
 - frontend: a "Public" switch (on by default) in the Home composer with explanatory text; sends `"public": false`
   only when switched off. History needs no code change (the server filters) beyond tolerant types.
-- No overlap with the active change `job-text-localization` (it does not touch `analysis-jobs-api`).
+- Overlapping active changes (planned around, not modified; `base_changes` is empty):
+  - `wikipedia-cross-language` (junction-2026/project#47, implementing) changes `wikipedia-lookup-result` only; its
+    frontend task also edits `frontend/backend-api-client` (`src/api/types.ts`) and `frontend/i18n` locale files.
+    This change adds disjoint members there (`public` on `CreateJobBody`/`Job`, new `compose.visibility.*` keys), so
+    the two merge textually without contradiction.
+  - `term-context` (junction-2026/project#49, proposed) modifies only the `analysis-jobs-api` requirement
+    "Wikipedia quotes for clients"; this change modifies "Create job", "Create job validation", "Job object",
+    "List jobs" and "Persisted jobs in listing and cancel" and adds three new requirements. No requirement is
+    modified by both, so both deltas apply in either order.

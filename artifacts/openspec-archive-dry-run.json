@@ -5,14 +5,14 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 17
+      "durationMs": 16
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 7
     },
     {
       "id": "analyzer-service-protocol",
@@ -33,14 +33,14 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 1
     },
     {
       "id": "job-text-localization",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 0
     },
     {
       "id": "llm-technique-result",
@@ -61,14 +61,14 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 5
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 3
     },
     {
       "id": "technique-classifier-result",
@@ -113,7 +113,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/tmp/tmp.j5c3y5iFNH",
+    "path": "/tmp/tmp.rYaCX80jcN",
     "source": "nearest"
   }
 }
