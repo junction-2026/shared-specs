@@ -4,11 +4,15 @@ Read-only REST API of the analysis orchestrator that places finished analyses wi
 ## ADDED Requirements
 
 ### Requirement: Map analysis
-A job SHALL be a map analysis exactly when all of these hold: its `done` is `true`; `GET /api/v1/jobs` lists it; it has detected propaganda (Detected propaganda); and its map country (Map country) has a non-empty `country_code`. A job left out of `GET /api/v1/jobs`, such as an unlisted job, SHALL NOT be a map analysis.
+A job SHALL be a map analysis exactly when all of these hold: its `done` is `true`; its `public` is `true` (analysis-jobs-api "Job visibility"), so that `GET /api/v1/jobs` lists it; it has detected propaganda (Detected propaganda); and its map country (Map country) has a non-empty `country_code`. A job with `public: false`, or otherwise left out of `GET /api/v1/jobs`, SHALL NOT be a map analysis, so the map endpoints never reveal a non-public job.
 
 #### Scenario: Propaganda in a known outlet
 - **WHEN** a completed job analyzed `https://www.example-news.ru/a-1`, `source_info` succeeded with `page_outlet.country_code` `RU`, and `techniques.result.detected` has `Loaded_Language` and `Doubt`
 - **THEN** the job is a map analysis of `RU` with the techniques `Loaded_Language` and `Doubt`
+
+#### Scenario: Non-public job left out
+- **WHEN** a done job created with `"public": false` has detected techniques and `page_outlet.country_code` `RU`
+- **THEN** it is not a map analysis: no CountryAggregate counts it and no `GET /api/v1/map/countries/RU/analyses` page contains it
 
 #### Scenario: Still running
 - **WHEN** a job with detected techniques and a known country has `done: false`

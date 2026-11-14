@@ -1,7 +1,8 @@
 # Design: propaganda-map-api (junction-2026/project#59)
 
-Based on backend @ d03c1cc4ce1f941ef37a4b715c2de081ac65f379, frontend @ 8df0521d82acc7d94d6a90dd1751b1320f81b85f,
-project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 5981c9fdec37dc8664689f5ff2595ae797da618a.
+Based on backend @ 85cebc311e4b34337c064d0e5d85929dbbb206be, frontend @ 07d8c49ca54cb6e643d8bee82ba1c71c75c9e7b2,
+project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ e64613598d5da0836396308a99c3a46889cea6d0
+(main after `job-visibility` #53 and `wikipedia-cross-language` #47 were archived).
 
 ## Decisions
 
@@ -19,10 +20,11 @@ count (the issue says "by its existing cutoffs"); `strength` is passed through p
 UI can show weak hints as weaker (technique-classifier-result.md:346, :394). `llm_techniques`,
 `propaganda_detection` and the verdict do not decide membership, keeping the definition single-sourced.
 
-### D3. Scope = jobs `GET /api/v1/jobs` lists
-Defined by reference to the listing (analysis-jobs-api.md:159) instead of naming a visibility member, so the
-`job-visibility` plan (#53, not on main) needs no coordination: if it lands, unlisted jobs are automatically excluded;
-the map never becomes a way to discover unlisted jobs. Retention (analysis-jobs-api.md:509) removes jobs from the map.
+### D3. Scope = public jobs, i.e. jobs `GET /api/v1/jobs` lists
+`job-visibility` (#53) is now canonical: a Job has `public` (analysis-jobs-api.md:57, :601) and the listing leaves
+out `public: false` jobs (analysis-jobs-api.md:171, :612). Map analyses are restricted to `public: true` jobs, so the
+map never becomes a way to discover unlisted jobs; jobs stored before `public` existed count as public
+(analysis-jobs-api.md:602), so they are included. Retention (analysis-jobs-api.md:525) removes jobs from the map.
 
 ### D4. Values fixed at `done`; old jobs included
 Deriving once when a job is done (and once for stored jobs on upgrade) keeps aggregates stable and cheap to query
@@ -39,7 +41,7 @@ than ignored, so the map is useful immediately after deploy.
 
 ## Compatibility classification (common rule 13 / step 2)
 
-Every object and endpoint this change touches or reuses, grepped in canonical specs on main @ 5981c9f:
+Every object and endpoint this change touches or reuses, grepped in canonical specs on main @ e646135:
 
 | Item | Where used today | Change | Class |
 |---|---|---|---|
@@ -48,13 +50,13 @@ Every object and endpoint this change touches or reuses, grepped in canonical sp
 | CountryAggregate, TechniqueCount, MapAnalysis, MapTechnique | new objects | new | shared-additive |
 | Outlet object (source-info-result.md:89) | SourceInfo `articles[].outlet`, `page_outlet` (source-info-result.md:103) | reused read-only inside MapAnalysis `outlet`; unchanged | none |
 | Detection `name`/`display`/`strength` (technique-classifier-result.md:256, :346) | `techniques` result | values copied; unchanged | none |
-| FinalAssessment `verdict` (analysis-jobs-api.md:130, :198) | Job, JobSummary | value copied; unchanged | none |
-| Job object, List jobs (analysis-jobs-api.md:44, :159) | jobs API, events | referenced for scope; unchanged | none |
+| FinalAssessment `verdict` (analysis-jobs-api.md:142, :210) | Job, JobSummary | value copied; unchanged | none |
+| Job object incl. `public`, List jobs, Job visibility (analysis-jobs-api.md:56, :171, :601) | jobs API, events | referenced for scope (`public: true` only); unchanged | none |
 | Error codes `invalid_request`, `method_not_allowed` (api-conventions.md:29) | all endpoints | reused on a new endpoint | shared-additive |
 
 No existing member, status or error is removed, renamed or re-typed: **no shared-breaking change, no client
 migration**. Existing clients that never call `/api/v1/map/*` are unaffected. All new objects are "at least" objects
-(api-conventions.md:51); no "exactly" clause is introduced.
+(api-conventions.md:52); no "exactly" clause is introduced.
 
 ## Non-shared (local) parts
 - backend: persisted map columns/table, migration + backfill, Memory-store derivation, query/index strategy, tests.
