@@ -14,7 +14,8 @@ from or quote, and nothing stops it from paraphrasing Wikipedia as if quoting it
   as `no_coverage`. "No verdict from Wikipedia lookup" is kept and extended to the labels.
 - **analysis-jobs-api**: FinalAssessment gets `wikipedia_quotes` (array, `[]` by default). The orchestrator keeps a
   finalizer-proposed quote only when it is a substring of the cited WikiLookup's `passage` and that entry is not
-  `no_coverage`; others are dropped without failing finalization.
+  `no_coverage`; others are dropped without failing finalization. Kept quotes persist verbatim with job
+  history and are never re-verified (rebased on the persistence/interruption requirements now on `main`).
 - **analyzer-service-protocol**: the finalizer response may carry `wikipedia_quotes`; normalization keeps the
   verified ones instead of dropping the member.
 
@@ -25,7 +26,7 @@ No LLM in the Wikipedia analyzer; no true/false verdict from Wikipedia; no chang
 no frontend rendering (the frontend's types already ignore unknown members).
 
 ## Based on
-backend @ 402553adaf40e950db2f9cd0846d408ab2e79a31, frontend @ 1a14ae98aebb4160df059a3cff5e192186797c90,
+backend @ 0e6833bfa5f54cab43426bf15f74a65307afdfa0, frontend @ 4aab58091e8fa5edbe79f0d6f35f0fb24cec8ad8,
 project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 07b1fce6c316aa2ddf926ffab423dd721fb5b9b4.
 
 ## Impact
@@ -36,6 +37,6 @@ project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 07b1fce6c316a
 - `persistent-job-history` is archived on `main`; jobs it stored before this change lack `coverage` and
   `wikipedia_quotes`; the contract defines both absences.
 - Runs in parallel with junction-2026/project#47 (proposed change `wikipedia-cross-language`, shared-specs
-  `plan/47-compare-the-two-language-edition` @ 0a6e0c7d4b341dfac79de2c4e4f3aaec5d9a7f07), which also changes
+  `plan/47-compare-the-two-language-edition` @ a1e2de71e1ba87fcb725b71bcf20631d3dd949cd), which also changes
   `wikipedia-lookup-result` and the backend wikipedia adapter. This change does not build on it and touches
   different requirements (see design.md "Overlap with #47"); either can be archived first.

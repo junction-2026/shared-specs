@@ -1,7 +1,7 @@
 # Design: Wikipedia passage coverage label
 
 ## Context
-Based on backend @ 402553adaf40e950db2f9cd0846d408ab2e79a31, frontend @ 1a14ae98aebb4160df059a3cff5e192186797c90,
+Based on backend @ 0e6833bfa5f54cab43426bf15f74a65307afdfa0, frontend @ 4aab58091e8fa5edbe79f0d6f35f0fb24cec8ad8,
 project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 07b1fce6c316aa2ddf926ffab423dd721fb5b9b4.
 
 - backend `internal/adapter/wikipedia.go:27` `wikiLookup` holds the WikiLookup members; `personalize`
@@ -18,13 +18,20 @@ project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 07b1fce6c316a
 - `persistent-job-history` is archived (shared-specs @ 0fe09d0, backend SQLite store @ 402553a); it did not touch
   FinalAssessment, the protocol or wikipedia-lookup-result. Jobs it persisted before this change lack the new
   members; the contract defines both absences.
+- Spec rebase (shared-specs `main` @ 07b1fce): canonical `analysis-jobs-api` gained "Job history persistence",
+  "Persisted jobs in listing and cancel", "History retention", "Jobs interrupted by a restart", "Interrupted parts"
+  and "Interrupted part timing" (`openspec/specs/analysis-jobs-api/spec.md:490-543`). None is MODIFIED here; the
+  only MODIFIED requirement, "FinalAssessment object" (`spec.md:130-139`), is unchanged on `main` and the delta
+  keeps its text verbatim plus `wikipedia_quotes`. The new ADDED requirement "Wikipedia quotes in persisted and
+  interrupted jobs" ties the member to them: persisted verbatim (backend stores `finalization.result` as raw JSON,
+  `internal/job/job.go:255`), never re-verified, absent when an interrupted finalization has `result: null`.
 
 - Active change `job-text-localization` (#45, on `main`) localizes only FinalAssessment `user_text` and LLM
   finding texts and requires quotations and Wikipedia passages to stay verbatim ("Original evidence stays
   verbatim"). `wikipedia_quotes` and `evidence_sentence` are such original evidence: never localized, and its
   JobLocalization `final_assessment` (`{"user_text": ...}`) is unaffected by the new member. No requirement overlap.
 
-## Overlap with #47 (`wikipedia-cross-language`, plan @ 0a6e0c7d4b341dfac79de2c4e4f3aaec5d9a7f07)
+## Overlap with #47 (`wikipedia-cross-language`, plan @ a1e2de71e1ba87fcb725b71bcf20631d3dd949cd)
 An approver let #47 run in parallel on `wikipedia-lookup-result` and `backend/analyzer-adapters`. Planned around it:
 - **Disjoint requirements.** #47 MODIFIES "ClaimLookup object" and ADDS cross-language requirements; this change
   MODIFIES only "No verdict from Wikipedia lookup" (which #47 references but does not modify) and ADDS requirements

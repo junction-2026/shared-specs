@@ -5,42 +5,42 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 30
+      "durationMs": 28
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 11
+      "durationMs": 9
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 3
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 0
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 10
+      "durationMs": 8
     },
     {
       "id": "job-text-localization",
       "type": "change",
       "valid": true,
       "issues": [],
-      "durationMs": 120
+      "durationMs": 109
     },
     {
       "id": "llm-technique-result",
@@ -54,35 +54,35 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 5
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 4
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 10
+      "durationMs": 8
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 9
+      "durationMs": 8
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 4
     },
     {
       "id": "wikipedia-lookup-result",
@@ -96,7 +96,7 @@
       "type": "change",
       "valid": true,
       "issues": [],
-      "durationMs": 141
+      "durationMs": 127
     }
   ],
   "summary": {
@@ -120,7 +120,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/270430ab-a30d-4ef4-920c-e33c03865b76",
+    "path": "/srv/junction/worktrees/shared-specs/b5457abf-90e4-4bed-a831-fbb642745135",
     "source": "nearest"
   }
 }

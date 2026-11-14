@@ -5,21 +5,21 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 34
+      "durationMs": 32
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 14
+      "durationMs": 13
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 7
+      "durationMs": 6
     },
     {
       "id": "api-conventions",
@@ -54,7 +54,7 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 11
+      "durationMs": 12
     },
     {
       "id": "social-scraper-api",
@@ -75,21 +75,21 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 5
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 1
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 3
     }
   ],
   "summary": {
@@ -113,7 +113,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/tmp/tmp.A550yt3hqS",
+    "path": "/tmp/tmp.UfpbXjqEV7",
     "source": "nearest"
   }
 }

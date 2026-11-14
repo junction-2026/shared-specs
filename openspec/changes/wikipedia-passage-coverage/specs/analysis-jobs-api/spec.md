@@ -7,6 +7,17 @@
 - **WHEN** the job has no `wikipedia` AnalyzerRun, or finalization is produced by the orchestrator
 - **THEN** `finalization.result.wikipedia_quotes` is `[]`
 
+### Requirement: Wikipedia quotes in persisted and interrupted jobs
+With persistent history ("Job history persistence"), `wikipedia_quotes` SHALL be returned after a restart unchanged from when the job finalized; the orchestrator SHALL NOT re-verify or change it. A finalization ended by "Interrupted parts" has `result` null and therefore no `wikipedia_quotes`.
+
+#### Scenario: Quotes after a restart
+- **WHEN** a job finalized with one kept WikipediaQuote and the server is restarted
+- **THEN** `GET /api/v1/jobs/{id}` returns `finalization.result.wikipedia_quotes` with that same entry
+
+#### Scenario: Finalization interrupted
+- **WHEN** the server stops while a job's finalization is `running` and starts again
+- **THEN** `finalization.status` is `failed` with `error.code: interrupted`, `finalization.result` is null and no Wikipedia quotation is shown
+
 ### Requirement: Wikipedia quote verification
 The orchestrator SHALL keep a finalizer-proposed quote only when the job's succeeded `wikipedia` AnalyzerRun has a ClaimLookup with an equal `claim` holding a WikiLookup with an equal `language`, `status` `found` and a `coverage` other than `no_coverage` (see "Unverifiable evidence"), whose `passage` contains the proposed `quote`, trimmed and non-empty, as a substring. It SHALL store the trimmed text and drop every other proposed quote without failing finalization.
 
