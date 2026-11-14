@@ -62,26 +62,45 @@ When an `http_async` analyzer times out or its job is cancelled while polling, t
 - **THEN** the analyzer is `failed` with `timeout` and the orchestrator sends `DELETE https://svc/tasks/1`
 
 ### Requirement: Analyzer result conventions
-An analyzer result SHALL be a JSON object stored verbatim. Services SHOULD expose evidence as `result.evidence`, an array of objects each with a unique string `id` and optional `kind`, `excerpt`, `score`; EvidenceRefs cite them by `analyzer_id` and `evidence_id`. A `result.score` is on the service's own scale; the orchestrator MUST NOT aggregate scores across analyzers.
+An analyzer result SHALL be a JSON object stored verbatim. Services SHOULD expose evidence as `result.evidence`, an array of objects each with a unique string `id` and optional `kind`, `excerpt`, `score`. A `result.score` is on the service's own scale; the orchestrator MUST NOT aggregate scores across analyzers.
 
 #### Scenario: Evidence reference
 - **WHEN** analyzer `claims` returns `{"evidence": [{"id": "c1", "excerpt": "..."}]}`
-- **THEN** the finalizer may cite it as `{"analyzer_id": "claims", "evidence_id": "c1"}`
+- **THEN** its AnalyzerRun `result` contains that `evidence` array verbatim
 
 ### Requirement: Finalizer response
-The finalizer service SHALL return a FinalAssessment (analysis-jobs-api) without `produced_by`, through any adapter. The orchestrator SHALL store an absent `overall_score` as null and absent `evidence`/`limitations` as `[]`, set `produced_by: finalizer`, keep other members verbatim, and SHALL NOT compute or adjust any score.
+For every adapter the finalizer output SHALL be a JSON object with at least `verdict` and `user_text` and optionally `confidence`, as defined for FinalAssessment (analysis-jobs-api). For `http_sync` and `http_async` the output is the result object; for `llm` it is the JSON object decoded from the model's reply.
 
 #### Scenario: Minimal valid response
-- **WHEN** the finalizer returns `{"verdict": "low_risk", "categories": [], "explanation": "No signs found."}`
-- **THEN** the stored result has `overall_score: null`, `evidence: []`, `limitations: []` and `produced_by: finalizer`
+- **WHEN** the finalizer returns `{"verdict": "not_detected", "user_text": "No signs of propaganda were found."}`
+- **THEN** the stored result has `confidence: null`, `usage: null` and `produced_by: finalizer`
 
 ### Requirement: Finalizer response validation
-The orchestrator SHALL fail finalization with `invalid_output` when the response is not an object, `verdict` is not one of the four verdicts, `categories` is not an array, `explanation` is not a string, `overall_score` or a category `score` is neither null nor a number 0–100, `overall_score` is non-null with verdict `insufficient_evidence`, or the configured output schema is violated.
+The orchestrator SHALL fail finalization with `invalid_output` when the adapter cannot decode the output into a JSON object, `verdict` is not `detected`, `not_detected` or `uncertain`, `user_text` is missing, not a string or empty after trimming, `confidence` is present and neither null nor a number from 0 to 1, or the configured output schema is violated. Invalid output SHALL NOT be stored or shown as a verdict.
 
 #### Scenario: Missing required member
-- **WHEN** the finalizer returns `{"verdict": "low_risk"}` without `categories` and `explanation`
-- **THEN** finalization is `failed` with `error.code: invalid_output` and all AnalyzerRun results remain unchanged
+- **WHEN** the finalizer returns `{"verdict": "detected"}` without `user_text`
+- **THEN** finalization is `failed` with `error.code: invalid_output`, `finalization.result` is null, all AnalyzerRun results remain unchanged and the job ends `completed`
 
 #### Scenario: Contradictory response
-- **WHEN** the finalizer returns `{"verdict": "insufficient_evidence", "overall_score": 40, "categories": [], "explanation": "..."}`
+- **WHEN** the finalizer returns the old shape `{"verdict": "insufficient_evidence", "overall_score": 40, "categories": [], "explanation": "..."}`
 - **THEN** finalization is `failed` with `error.code: invalid_output`
+
+#### Scenario: Confidence out of range
+- **WHEN** the finalizer returns `{"verdict": "detected", "confidence": 86, "user_text": "..."}`
+- **THEN** finalization is `failed` with `error.code: invalid_output`
+
+#### Scenario: Reply is not JSON
+- **WHEN** the `llm` adapter receives a reply whose message content is plain prose
+- **THEN** finalization is `failed` with `error.code: invalid_output` and the job ends `completed`
+
+### Requirement: Finalizer output normalization
+The orchestrator SHALL store `verdict`, `confidence` and `user_text` unchanged (an absent or null `confidence` as null), set `produced_by: finalizer`, set `usage` to the token usage reported by the adapter (null when none) and drop every other member of the output. It SHALL NOT compute or adjust the verdict or confidence.
+
+#### Scenario: Extra members dropped
+- **WHEN** the finalizer returns `{"verdict": "detected", "confidence": 0.9, "user_text": "...", "reasoning": "..."}`
+- **THEN** the stored result has no `reasoning` member
+
+#### Scenario: Output member named usage
+- **WHEN** an `http_sync` finalizer returns `{"verdict": "detected", "user_text": "...", "usage": {"total_tokens": 1}}`
+- **THEN** the stored result has `usage: null`, because `usage` is set only from the adapter's report
