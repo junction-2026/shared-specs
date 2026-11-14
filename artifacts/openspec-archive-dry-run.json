@@ -5,111 +5,118 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 35
+      "durationMs": 17
     },
     {
       "id": "analysis-job-events",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 17
+      "durationMs": 9
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 13
+      "durationMs": 7
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 2
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 1
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 1
     },
     {
       "id": "job-text-localization",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 13
+      "durationMs": 6
     },
     {
       "id": "llm-technique-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 12
+      "durationMs": 5
     },
     {
       "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 10
-    },
-    {
-      "id": "social-scraper-api",
-      "type": "spec",
-      "valid": true,
-      "issues": [],
-      "durationMs": 9
-    },
-    {
-      "id": "source-info-result",
-      "type": "spec",
-      "valid": true,
-      "issues": [],
       "durationMs": 5
     },
     {
-      "id": "technique-classifier-result",
+      "id": "propaganda-map-api",
       "type": "spec",
       "valid": true,
       "issues": [],
       "durationMs": 4
     },
     {
+      "id": "social-scraper-api",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 3
+    },
+    {
+      "id": "source-info-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
+    },
+    {
+      "id": "technique-classifier-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 5
+    },
+    {
       "id": "term-context-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 4
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 3
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 2
     }
   ],
   "summary": {
     "totals": {
-      "items": 15,
-      "passed": 15,
+      "items": 16,
+      "passed": 16,
       "failed": 0
     },
     "byType": {
@@ -119,15 +126,15 @@
         "failed": 0
       },
       "spec": {
-        "items": 15,
-        "passed": 15,
+        "items": 16,
+        "passed": 16,
         "failed": 0
       }
     }
   },
   "version": "1.0",
   "root": {
-    "path": "/tmp/tmp.qgmOHAn8gU",
+    "path": "/tmp/tmp.1sFXSTqzBU",
     "source": "nearest"
   }
 }
