@@ -231,7 +231,7 @@ A ScrapeRequest SHALL be `{"url": <absolute http(s) URL, at most 2048 characters
 - **THEN** the status is 201 and the body is a Job with `status` `queued` or `scraping`, `done: false`, `input: null` and `scrape` `{"status": "pending" or "running", "url": "https://bsky.app/profile/alice.bsky.social/post/3kxyz", "max_posts": 20, "max_comments": 50, ...}`
 
 ### Requirement: Scrape request validation
-`POST /api/v1/jobs` SHALL respond 422 `validation_failed` when both or neither of `input` and `scrape` are present (`details.fields` key `input`) or when `scrape.url`, `scrape.max_posts` or `scrape.max_comments` is missing where required, of the wrong type or out of range. It SHALL respond 503 `scrape_unavailable`, creating no job, for a body with `scrape` when the server has no scraper configured.
+`POST /api/v1/jobs` SHALL respond 422 `validation_failed` when both or neither of `input` and `scrape` are present (`details.fields` key `input`) or when `scrape.url`, `scrape.max_posts` or `scrape.max_comments` is missing where required, of the wrong type or out of range. It SHALL respond 503 `scrape_unavailable`, creating no job, for a body with `scrape` only when scraping is disabled in the server's configuration.
 
 #### Scenario: Both input forms
 - **WHEN** a client posts `{"input": {"content": "x"}, "scrape": {"url": "https://x.com/alice"}}`
@@ -242,7 +242,7 @@ A ScrapeRequest SHALL be `{"url": <absolute http(s) URL, at most 2048 characters
 - **THEN** the status is 422 with `error.code` `validation_failed` and `error.details.fields` has the key `scrape.url`
 
 #### Scenario: Scraper not configured
-- **WHEN** the server has no scraper configured and a client posts `{"scrape": {"url": "https://x.com/alice"}}`
+- **WHEN** the server has scraping disabled in its configuration and a client posts `{"scrape": {"url": "https://x.com/alice"}}`
 - **THEN** the status is 503 with `error.code` `scrape_unavailable` and no job is created
 
 ### Requirement: Input of scrape jobs
@@ -292,18 +292,22 @@ For a scraped input, `source.url` SHALL be the requested URL, `source.platform` 
 - **THEN** the job's `input` has `content: "Vote no!"`, `source.platform: mastodon`, `source.author: alice@mastodon.social` and `source.metadata.scrape` equal to the ScrapeResult
 
 ### Requirement: Scrape failure causes
-A scrape SHALL fail when the scraper answers with an error, cannot be reached, answers with an invalid body, or does not answer within the server's scrape timeout. `Scrape.error.code` values include the scraper's error codes other than `unauthorized`, `invalid_request` and `validation_failed`, passed through with their `details`, and `no_text_content`, `scraper_unavailable`, `timeout` and `cancelled`. `error.message` MUST NOT contain the scraper's URL, its token or platform credentials.
+A scrape SHALL fail when the scraper yields a scrape error (social-scraper-api), yields a result that is not a valid ScrapeResult, or does not finish within the server's scrape timeout. `Scrape.error.code` values include the scraper's error codes other than `internal_error`, passed through with their `details`, and `no_text_content`, `scraper_unavailable`, `timeout` and `cancelled`. `error.message` MUST NOT contain tokens, cookies or other platform credentials.
 
 #### Scenario: Scraper error passed through
-- **WHEN** the scraper answers 403 `account_private` with `details.platform` `instagram`
+- **WHEN** the scraper fails with `account_private` and `details.platform` `instagram`
 - **THEN** the job's `scrape.error` has `code: account_private` and `details.platform: instagram`
 
+#### Scenario: Facebook URL
+- **WHEN** a job is created with `{"scrape": {"url": "https://www.facebook.com/examplenews"}}`
+- **THEN** the job ends `failed` with `scrape.error.code: unsupported_url`
+
 ### Requirement: Scraper unavailable
-`Scrape.error.code` SHALL be `scraper_unavailable` when the scraper is unreachable, rejects the orchestrator's credentials (401), answers `invalid_request` or `validation_failed`, answers 500 `internal_error`, or answers with a body that is neither a valid ScrapeResult nor an error envelope.
+`Scrape.error.code` SHALL be `scraper_unavailable` when the scraper fails with `internal_error` (for example a panic in a platform module) or yields a result that is not a valid ScrapeResult (missing `platform` or `url_kind`, or `url_kind: post` without `post`).
 
 #### Scenario: Scraper down
-- **WHEN** the scraper service refuses connections
-- **THEN** the job's `scrape.error.code` is `scraper_unavailable` and the job ends `failed`
+- **WHEN** a platform module panics while scraping a job's URL
+- **THEN** the job's `scrape.error.code` is `scraper_unavailable`, the job ends `failed` and the server keeps serving other jobs
 
 ### Requirement: Scrape failure outcomes
 When a scrape fails other than by cancellation, every `pending` AnalyzerRun SHALL be `skipped` with reason `input_unavailable`, `finalization` SHALL be `skipped` with reason `input_unavailable`, the finalizer SHALL NOT be called (no insufficient-evidence assessment is produced), `input` SHALL stay null and the job SHALL end `failed`.
@@ -318,3 +322,10 @@ Cancelling a job whose scrape is `pending` or `running` SHALL abort the scrape, 
 #### Scenario: Cancel while scraping
 - **WHEN** a client cancels a job with `status: scraping`
 - **THEN** the response is 202 and the job reaches `status: cancelled` with `scrape.error.code: cancelled` and `input: null`
+
+### Requirement: Scraping available by default
+Scraping SHALL be available by default in the backend, with no separately running scraper service or scraper-specific configuration.
+
+#### Scenario: Single backend scrapes
+- **WHEN** a backend started without scraper-specific configuration receives `{"scrape": {"url": "https://bsky.app/profile/alice.bsky.social"}}`
+- **THEN** the status is 201 and the job's scrape runs inside that backend
