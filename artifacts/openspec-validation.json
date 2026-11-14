@@ -5,77 +5,77 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 15
+      "durationMs": 13
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 7
+      "durationMs": 4
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 2
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 1
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 0
+    },
+    {
+      "id": "llm-reply-retry",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 44
     },
     {
       "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 7
+      "durationMs": 4
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 4
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
-    },
-    {
-      "id": "technique-all-labels",
-      "type": "change",
-      "valid": true,
-      "issues": [],
-      "durationMs": 46
+      "durationMs": 3
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 3
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 1
     }
   ],
   "summary": {
@@ -99,7 +99,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/efe2ee50-0e77-4bac-a025-d41d4d9dc72a",
+    "path": "/srv/junction/worktrees/shared-specs/93639993-d33b-4e29-8aea-9169c515bd45",
     "source": "nearest"
   }
 }

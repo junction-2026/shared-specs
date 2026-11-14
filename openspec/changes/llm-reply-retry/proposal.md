@@ -2,7 +2,7 @@
 
 The `llm` adapter (finalizer `final_synthesis` and `topic_extraction`) fails the whole call with `invalid_output` when the model's reply is cut off (`finish_reason: length`), is not valid JSON, or does not match the schema. For the finalizer the job then ends with no verdict. A benchmark on 2026-11-14 saw 1 failure in 8 calls, a reply cut off at `max_tokens` on a Russian post (junction-2026/project#25). The backend will retry such a reply once. Clients need to see whether a result came from a retry, and what `usage` means when two requests were made.
 
-Based on backend @ 34e1c514854bb0d191b70c2a8bfef83333326959, frontend @ 1abe19a7fa41cea9a083eebc699f328dc58e904a, project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 6d1e0c05eeee99ea3099ca5c00e6e8a7c8e16dad.
+Based on backend @ dfe8c12b98ebd33cbd038c8863e9086f09718618, frontend @ 1abe19a7fa41cea9a083eebc699f328dc58e904a, project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 04e47a18de1113f915986ca7a77438ad9bdda5bd.
 
 ## What Changes
 

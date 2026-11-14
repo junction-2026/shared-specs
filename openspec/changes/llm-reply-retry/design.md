@@ -1,6 +1,6 @@
 ## Context
 
-Based on backend @ 34e1c514854bb0d191b70c2a8bfef83333326959. `adapter.LLM` (`internal/adapter/llm.go:60`) is the only path to the provider, for the finalizer (`internal/finalizer/finalizer.go:90`), `topic_extraction` (`internal/adapter/topic.go:90`) and technique spans (`internal/adapter/technique_spans.go:167`). Today it retries once on a connection error, 429 or 5xx (`llmSend`). Every reply problem goes to `decodeReply` and becomes `invalid_output`.
+Based on backend @ dfe8c12b98ebd33cbd038c8863e9086f09718618. `adapter.LLM` (`internal/adapter/llm.go:60`) is the only path to the provider, for the finalizer (`internal/finalizer/finalizer.go:90`), `topic_extraction` (`internal/adapter/topic.go:90`) and technique spans (`internal/adapter/technique_spans.go:167`). Today it retries once on a connection error, 429 or 5xx (`llmSend`). Every reply problem goes to `decodeReply` and becomes `invalid_output`.
 
 ## Goals / Non-Goals
 
@@ -16,7 +16,7 @@ Non-goals: the retry prompt text, the registry settings, the time budget and the
 4. **Usage summing.** Each numeric member is summed. Nested objects (such as `prompt_tokens_details`) are summed the same way, recursively. A member present in only one report keeps that value. Non-numeric members take the retry's value. When neither attempt reported usage, `usage` is null. This keeps the "provider token usage object" shape, including a provider `cost` member.
 5. **Failure after retry stays `invalid_output`.** `error.message` is free text and is not a contract. The backend puts both reasons in it.
 
-## Change classification (evidence from shared-specs @ 6d1e0c0)
+## Change classification (evidence from shared-specs @ 04e47a1)
 
 Every place in the canonical specs that defines or uses the changed objects:
 
@@ -37,7 +37,7 @@ No shared-breaking change. Affected clients: frontend (reads neither object memb
 
 ## Overlap with active changes
 
-`remove-closed-platform-scraping` (active, feature #24) modifies `analysis-jobs-api` only in "Scrape failure causes". This change modifies "FinalAssessment object" and "Insufficient evidence without fabricated score" and adds a new requirement. The two changes touch different requirements, so there is no conflict, and this change neither builds on nor modifies it.
+`remove-closed-platform-scraping` (feature #24) was archived into the canonical specs at shared-specs @ 04e47a1 after this plan branch was cut. It changed `analysis-jobs-api` only in "Scrape failure causes" (scenario now uses `mastodon`, new scenario "Unsupported social network URL"). This change's delta was re-checked against the merged canonical text: the MODIFIED requirements "FinalAssessment object" and "Insufficient evidence without fabricated score" are unchanged on main and keep their full canonical wording, and this change does not touch "Scrape failure causes", so archiving it keeps feature #24's requirements. No other active change touches `analysis-jobs-api` or `topic-extraction-result`.
 
 ## Risks / Trade-offs
 
