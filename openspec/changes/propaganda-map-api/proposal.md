@@ -44,5 +44,6 @@ each country has, with a per-country list of those analyses.
   main; this change reads the canonical `public` member (non-public jobs never appear on the map).
 - `analysis-chat-api` (#57, active on main @ 5f4e9e4, IMPLEMENTING, parallel) adds only `POST /api/v1/jobs/{id}/chat`: disjoint from
   `/api/v1/map/*`, no shared contradiction. Local overlap on backend `orchestrator-http-server` and frontend
-  `backend-api-client` is append-only in separate files/requirements; frontend `secondary-screens` is not modified by
-  this feature (see design.md "Overlap with analysis-chat-api").
+  `backend-api-client` is append-only in separate files/requirements; in frontend `secondary-screens` this feature only
+  adds optional props to the shared `WorldMap` component (`src/secondary/WorldMap.tsx`), while #57 changes only the Ask
+  screen (see design.md "Overlap with analysis-chat-api").

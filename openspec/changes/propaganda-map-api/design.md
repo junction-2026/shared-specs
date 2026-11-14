@@ -81,9 +81,14 @@ Local overlap (approver allowed parallel work) is kept to append-only edits in d
 - frontend `backend-api-client`: this feature appends `getMapCountries` and `listCountryAnalyses` at the end of
   `src/api/client.ts` and puts its tolerant types in a new `src/api/mapTypes.ts` (not `types.ts`); one ADDED
   requirement "Propaganda map client"; existing requirements are not modified.
-- frontend `secondary-screens`: not modified by this feature. The global map lives in the `explore-coverage`
-  capability (`src/explore/`, `src/views/ExploreView.tsx`); the Explore country panel keeps its "Inspect wire feeds →"
-  link, so "Explore and Region screens" / "Explore and Region navigation" still hold. #57 changes only the Ask screen.
+- frontend `secondary-screens`: the global map lives in the `explore-coverage` capability (`src/explore/`,
+  `src/views/ExploreView.tsx`). The shared `WorldMap` component (`src/secondary/WorldMap.tsx`, frontend @ 4339d35)
+  today has a fixed coverage tooltip (articles/publishers, WorldMap.tsx:159-162), four fixed fill levels
+  (WorldMap.tsx:5) and no keyboard focus on countries, so this feature adds **optional** props (custom fill per
+  country, custom tooltip content, focusable countries with Enter/Space = click) with defaults that keep today's
+  rendering for `/explore?job=<id>` and the Region screen. One ADDED local requirement; existing requirements
+  ("Explore and Region screens" / "Explore and Region navigation") still hold unchanged. #57 changes only the Ask
+  screen (`src/views/AskView.tsx`), so the files are disjoint.
 - frontend i18n: strings only in the `explore` namespace (`src/i18n/locales/<lang>/explore.ts`); #57 uses `ask`, #49
   uses results/term namespaces; the i18n runtime is not touched.
 
