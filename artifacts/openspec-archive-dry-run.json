@@ -5,49 +5,49 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 15
+      "durationMs": 14
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 7
+      "durationMs": 5
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 2
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 1
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 1
     },
     {
       "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 0
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 4
     },
     {
       "id": "source-info-result",
@@ -92,7 +92,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/tmp/tmp.2tS6TotqJQ",
+    "path": "/tmp/tmp.ZsSFYLefFq",
     "source": "nearest"
   }
 }

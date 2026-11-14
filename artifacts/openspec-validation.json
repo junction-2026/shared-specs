@@ -5,21 +5,21 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 13
+      "durationMs": 16
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 7
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 3
     },
     {
       "id": "api-conventions",
@@ -33,42 +33,35 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 0
-    },
-    {
-      "id": "llm-reply-retry",
-      "type": "change",
-      "valid": true,
-      "issues": [],
-      "durationMs": 44
+      "durationMs": 1
     },
     {
       "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 6
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 6
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 5
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 4
     },
     {
       "id": "topic-extraction-result",
@@ -76,6 +69,13 @@
       "valid": true,
       "issues": [],
       "durationMs": 1
+    },
+    {
+      "id": "web-page-scraping",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 52
     }
   ],
   "summary": {
@@ -99,7 +99,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/93639993-d33b-4e29-8aea-9169c515bd45",
+    "path": "/srv/junction/worktrees/shared-specs/e60d7d46-afde-4271-a7ba-494516a901e8",
     "source": "nearest"
   }
 }
