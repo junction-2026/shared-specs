@@ -1,0 +1,3 @@
+version: 1
+id: project-contracts
+remote: https://github.com/junction-2026/shared-specs.git

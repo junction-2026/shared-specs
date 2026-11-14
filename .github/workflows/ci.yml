@@ -1,0 +1,33 @@
+# Template openspec-only: repo-ci for repositories without buildable code
+# (the parent `project` repo at bootstrap, `shared-specs`, docs repos).
+# Branch protection requires the `repo-ci` check, so these repos need it too.
+# It validates OpenSpec only: strict validation, an archive dry-run and, on
+# PRs, that the PR carries an OpenSpec change.
+name: repo-ci
+on:
+  pull_request:
+    branches: [main]
+    # labeled: Junction's junction:no-spec label on a standalone change re-runs repo-ci
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  push:
+    branches: [main, "integration/**", "archive/**"]
+  workflow_dispatch:   # the orchestrator re-runs main when GitHub started no push run
+permissions:
+  contents: read
+jobs:
+  repo-ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env: {OPENSPEC_VERSION: "1.16.1"}
+    steps:
+      - uses: actions/checkout@v4      # PIN BY SHA
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4    # PIN BY SHA
+        with: {node-version: "22"}
+      # npx downloads the pinned OpenSpec CLI on every run; cache it by version.
+      - uses: actions/cache@v4         # PIN BY SHA
+        with:
+          path: ~/.npm
+          key: npm-openspec-${{ runner.os }}-${{ env.OPENSPEC_VERSION }}
+      - name: OpenSpec validation
+        run: bash scripts/validate-openspec.sh
