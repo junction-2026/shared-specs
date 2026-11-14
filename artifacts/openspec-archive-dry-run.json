@@ -5,35 +5,35 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 14
+      "durationMs": 31
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 12
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 6
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 4
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 3
     },
     {
       "id": "llm-technique-result",
@@ -47,42 +47,42 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 7
+      "durationMs": 15
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 13
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 10
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 8
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 4
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 2
     }
   ],
   "summary": {
@@ -106,7 +106,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/tmp/tmp.nIspvKPStm",
+    "path": "/tmp/tmp.k6mh1Wawk9",
     "source": "nearest"
   }
 }
