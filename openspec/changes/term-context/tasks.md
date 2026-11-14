@@ -1,5 +1,6 @@
 ## 1. Shared contract
 - [ ] 1.1 Approve new capability `term-context-result`
+- [ ] 1.2 Approve modified analysis-jobs-api "Wikipedia quotes for clients" (term encyclopedia quotes may be shown as Wikipedia quotations)
 
 ## 2. backend (child `backend-term-context`)
 - [ ] 2.1 Registry entry and config for `term_context` (defaults, `depends_on`, category `coverage`)
@@ -13,3 +14,4 @@
 - [ ] 3.1 Tolerant reader of the TermContext result
 - [ ] 3.2 Term cards: `in_post`, encyclopedia quote, elsewhere snippets, sense; links only per the rendering rule;
   labels in all UI locales
+- [ ] 3.3 Present EncyclopediaQuote as a Wikipedia quotation only in term cards; final assessment keeps showing only `wikipedia_quotes`

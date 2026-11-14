@@ -3,9 +3,10 @@
 ## Decisions
 
 ### D1. New analyzer instead of a `wikipedia` "term mode"
-The issue suggests extending W1 (`wikipedia`) so a term can be looked up as its own page. Two active plans already
-modify `wikipedia-lookup-result` (#46 `wikipedia-passage-coverage`, #47 `wikipedia-cross-language`); a third delta on
-the same capability would conflict. The term lookup also has different rules (exact title or redirect only, one
+The issue suggests extending W1 (`wikipedia`) so a term can be looked up as its own page. `wikipedia-lookup-result`
+was just extended by #46 `wikipedia-passage-coverage` (archived on main @ 80eea74d: per-WikiLookup `coverage` and
+`evidence_sentence`, verified finalizer quotes) and the proposed #47 `wikipedia-cross-language` plan changes it again;
+a third delta on the same capability would conflict with #47. The term lookup also has different rules (exact title or redirect only, one
 wiki, a lead *sentence*, `no_coverage`) from the claim lookup (title/full-text modes, two wikis, passages). A new
 analyzer `term_context` with its own capability keeps both contracts simple and independent. The backend may reuse
 the `wikipedia` adapter's HTTP client, rate limiting and persistent cache internally (backend local).
@@ -26,7 +27,16 @@ plus QuoteRefs; `differs_from` makes every differing quote reachable (issue AC4)
 
 ### D4. `encyclopedia` is an object or the literal `"no_coverage"`
 Follows issue AC2 literally. Clients treat any non-object value like `"no_coverage"`, so a later status object
-or new string is not breaking.
+or new string is not breaking. The string is unrelated to the WikiLookup `coverage` value `no_coverage`
+(wikipedia-lookup-result, from #46): it means "no own page with a usable lead", not a passage label.
+
+### D7. Term encyclopedia quotes may be shown as Wikipedia quotations
+Canonical analysis-jobs-api "Wikipedia quotes for clients" (spec.md:578-579, added by #46) lets clients present
+*only* FinalAssessment `wikipedia_quotes` as quotations from Wikipedia. Read literally, it forbids the term cards.
+This change modifies that requirement: EncyclopediaQuote objects of `term_context` may also be presented as
+Wikipedia quotations, and within the final assessment only `wikipedia_quotes` are. Both kinds are verbatim and
+verified against a revision (`wikipedia_quotes` by substring check against a `passage`; EncyclopediaQuote as a
+prefix of the lead of `revision_id`), so the intent of #46 (no paraphrase presented as a quote) is kept.
 
 ### D5. One wiki, no extra news search
 Quota risk from the issue: at most one title request plus one search request per kept term (cached, max 5 terms),
@@ -41,7 +51,7 @@ rarely yields terms with comparable quotes, and "Dependency-skipped availability
 
 ## Compatibility classification
 
-Grep of canonical specs (shared-specs @ 07b1fce6) for every object this change touches:
+Grep of canonical specs (shared-specs @ 80eea74d) for every object this change touches:
 
 | Object / place | Evidence | Change | Class |
 |---|---|---|---|
@@ -51,7 +61,10 @@ Grep of canonical specs (shared-specs @ 07b1fce6) for every object this change t
 | `news_search` Article `snippet`, `url`, `title`, `domain` | news-search-result/spec.md:237 | read only; no extra searches | none |
 | `wikipedia` analyzer / WikipediaLookup | wikipedia-lookup-result/spec.md (whole) | not touched | none |
 | LLM reply retry rules | analysis-jobs-api/spec.md:422-468 | referenced, not modified | none |
-| job-text-localization (active change #45) | changes/job-text-localization/specs/job-text-localization/spec.md "Localization does not re-run analysis", "Original evidence stays verbatim" | TermContext strings are original evidence and are never translated; no new LocalizedText | none |
+| "Wikipedia quotes for clients" | analysis-jobs-api/spec.md:578-583 | MODIFIED: also allows `term_context` EncyclopediaQuote as a Wikipedia quotation; the final assessment rule and absent-member rule are unchanged | shared-additive (relaxes a client rule for a new object; existing clients stay conformant) |
+| FinalAssessment `wikipedia_quotes`, WikipediaQuote | analysis-jobs-api/spec.md:131, :545-576; analyzer-service-protocol/spec.md:108 | not touched; `term_context` results are not finalizer quote sources | none |
+| WikiLookup `coverage` / `no_coverage` | wikipedia-lookup-result/spec.md (from #46) | not touched; TermContext `"no_coverage"` is a separate value of a separate object | none |
+| job-text-localization (canonical, #45 archived) | job-text-localization/spec.md:72-73 "Localization does not re-run analysis", :100-101 "Original evidence stays verbatim" | TermContext strings are original evidence and are never translated; no new LocalizedText | none |
 
 No shared-breaking change: no member removed, renamed or retyped, no status of an existing case changed. No
 client migration is needed; clients that do not know `term_context` show it at most as a generic analyzer row.

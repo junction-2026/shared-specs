@@ -17,9 +17,14 @@ each as a verbatim quote from a source the user can open, never a model-written 
   term list or dictionary. The model never writes a definition, a tribe or camp name, or a verdict: its output is
   only substrings of the post (selection) and the `same`/`differs` relation between given quotes (comparison).
 - The `wikipedia` analyzer and `wikipedia-lookup-result` are NOT changed: `term_context` does its own title lookup
-  in one wiki (the post's language). This keeps the change independent of the active plans that modify
-  `wikipedia-lookup-result` (#46 `wikipedia-passage-coverage`, #47 `wikipedia-cross-language`). The backend may
-  share code and cache with the `wikipedia` adapter.
+  in one wiki (the post's language). The claim lookup's rules (title/full-text modes, two wikis, passages and, since
+  #46 `wikipedia-passage-coverage` was archived, per-WikiLookup `coverage` labels) do not fit a term's own page, and
+  the proposed #47 `wikipedia-cross-language` plan still changes that capability. The backend may share code and
+  cache with the `wikipedia` adapter.
+- analysis-jobs-api "Wikipedia quotes for clients" (canonical since #46 was archived) says clients present only
+  FinalAssessment `wikipedia_quotes` as quotations from Wikipedia. This change modifies it so that `term_context`
+  EncyclopediaQuote objects may also be presented as Wikipedia quotations, while the final assessment still shows
+  only `wikipedia_quotes`.
 - `news_search` is NOT changed and no extra news search is sent: `elsewhere` reuses its Article snippets, so the
   Serper quota is unaffected.
 - Not shared (common rule 13): LLM prompts, sentence segmentation heuristics, Wikipedia cache, registry config,
@@ -27,15 +32,17 @@ each as a verbatim quote from a source the user can open, never a model-written 
   change).
 
 ## Impact
-- Shared capabilities: `term-context-result` (new). No existing requirement is modified; analysis-jobs-api,
-  analysis-job-events, topic-extraction-result, wikipedia-lookup-result and news-search-result are unchanged.
+- Shared capabilities: `term-context-result` (new); `analysis-jobs-api` (one requirement modified, additive:
+  "Wikipedia quotes for clients"). analysis-job-events, topic-extraction-result, wikipedia-lookup-result,
+  news-search-result and job-text-localization are unchanged.
 - backend: new `term_context` adapter and registry entry; at most two LLM calls per job (selection, comparison),
   each with the usual single reply retry; at most two Wikipedia requests per kept term, cached.
 - frontend: renders the result as term cards in plain text, links only per the rendering rule.
 - project: no new integration suite (`full-e2e` is still a placeholder); repo-ci gates the work.
-- Active change `job-text-localization` (#45): its "Localization does not re-run analysis" and "Original evidence
-  stays verbatim" already treat these quotes as original source material; `term`, `in_post`, `quote` and
-  `snippet` are never translated. No interaction with its API; not a base change.
+- Canonical `job-text-localization` (#45, archived): "Localization does not re-run analysis" and "Original evidence
+  stays verbatim" already treat these quotes as original source material; `term`, `in_post`, `quote` and `snippet`
+  are never translated and no LocalizedText is added. No change to that capability.
+- No base changes: the plan builds only on canonical specs; no other feature's active change is edited.
 
-Based on backend @ 0e6833bfa5f54cab43426bf15f74a65307afdfa0, frontend @ 1a14ae98aebb4160df059a3cff5e192186797c90,
-project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 07b1fce6c316aa2ddf926ffab423dd721fb5b9b4.
+Based on backend @ d03c1cc4ce1f941ef37a4b715c2de081ac65f379, frontend @ d89fc94d738759e936810e659df7f798a337bd4c,
+project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 80eea74d1a67f7e07075f91415415fbd3dba7444.
