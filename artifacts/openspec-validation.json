@@ -5,14 +5,14 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 13
+      "durationMs": 15
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 7
     },
     {
       "id": "analyzer-service-protocol",
@@ -26,7 +26,7 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 2
     },
     {
       "id": "fact-check-result",
@@ -40,41 +40,48 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 7
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 6
     },
     {
       "id": "source-info-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 5
+    },
+    {
+      "id": "technique-all-labels",
       "type": "change",
       "valid": true,
       "issues": [],
-      "durationMs": 37
+      "durationMs": 46
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 4
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 2
     }
   ],
   "summary": {
     "totals": {
-      "items": 10,
-      "passed": 10,
+      "items": 11,
+      "passed": 11,
       "failed": 0
     },
     "byType": {
@@ -84,15 +91,15 @@
         "failed": 0
       },
       "spec": {
-        "items": 9,
-        "passed": 9,
+        "items": 10,
+        "passed": 10,
         "failed": 0
       }
     }
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/bb14960b-4902-48d8-8863-8deadf10a923",
+    "path": "/srv/junction/worktrees/shared-specs/efe2ee50-0e77-4bac-a025-d41d4d9dc72a",
     "source": "nearest"
   }
 }
