@@ -19,7 +19,7 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 3
     },
     {
       "id": "api-conventions",
@@ -29,42 +29,70 @@
       "durationMs": 1
     },
     {
-      "id": "llm-topic-extraction",
-      "type": "change",
+      "id": "fact-check-result",
+      "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 38
+      "durationMs": 1
     },
     {
-      "id": "social-media-scrape-input",
+      "id": "news-search-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 2
+    },
+    {
+      "id": "social-scraper-api",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 2
+    },
+    {
+      "id": "source-info-result",
       "type": "change",
       "valid": true,
       "issues": [],
-      "durationMs": 51
+      "durationMs": 37
+    },
+    {
+      "id": "technique-classifier-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
+    },
+    {
+      "id": "topic-extraction-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
     }
   ],
   "summary": {
     "totals": {
-      "items": 6,
-      "passed": 6,
+      "items": 10,
+      "passed": 10,
       "failed": 0
     },
     "byType": {
       "change": {
-        "items": 2,
-        "passed": 2,
+        "items": 1,
+        "passed": 1,
         "failed": 0
       },
       "spec": {
-        "items": 4,
-        "passed": 4,
+        "items": 9,
+        "passed": 9,
         "failed": 0
       }
     }
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/25f5a29f-99a4-4263-9ddd-bda601bba341",
+    "path": "/srv/junction/worktrees/shared-specs/bb14960b-4902-48d8-8863-8deadf10a923",
     "source": "nearest"
   }
 }
