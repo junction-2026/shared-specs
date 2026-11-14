@@ -5,7 +5,7 @@
 ### D1. New analyzer instead of a `wikipedia` "term mode"
 The issue suggests extending W1 (`wikipedia`) so a term can be looked up as its own page. `wikipedia-lookup-result`
 was just extended by #46 `wikipedia-passage-coverage` (archived on main @ 80eea74d: per-WikiLookup `coverage` and
-`evidence_sentence`, verified finalizer quotes) and the proposed #47 `wikipedia-cross-language` plan changes it again;
+`evidence_sentence`, verified finalizer quotes) and #47 `wikipedia-cross-language` (active on main @ 5981c9fd) changes it again;
 a third delta on the same capability would conflict with #47. The term lookup also has different rules (exact title or redirect only, one
 wiki, a lead *sentence*, `no_coverage`) from the claim lookup (title/full-text modes, two wikis, passages). A new
 analyzer `term_context` with its own capability keeps both contracts simple and independent. The backend may reuse
@@ -51,7 +51,7 @@ rarely yields terms with comparable quotes, and "Dependency-skipped availability
 
 ## Compatibility classification
 
-Grep of canonical specs (shared-specs @ 80eea74d) for every object this change touches:
+Grep of canonical specs (shared-specs @ 5981c9fd; line numbers unchanged since 80eea74d) for every object this change touches:
 
 | Object / place | Evidence | Change | Class |
 |---|---|---|---|

@@ -19,7 +19,7 @@ each as a verbatim quote from a source the user can open, never a model-written 
 - The `wikipedia` analyzer and `wikipedia-lookup-result` are NOT changed: `term_context` does its own title lookup
   in one wiki (the post's language). The claim lookup's rules (title/full-text modes, two wikis, passages and, since
   #46 `wikipedia-passage-coverage` was archived, per-WikiLookup `coverage` labels) do not fit a term's own page, and
-  the proposed #47 `wikipedia-cross-language` plan still changes that capability. The backend may share code and
+  #47 `wikipedia-cross-language` (an active change on main @ 5981c9fd, not yet archived) still changes that capability. The backend may share code and
   cache with the `wikipedia` adapter.
 - analysis-jobs-api "Wikipedia quotes for clients" (canonical since #46 was archived) says clients present only
   FinalAssessment `wikipedia_quotes` as quotations from Wikipedia. This change modifies it so that `term_context`
@@ -44,5 +44,8 @@ each as a verbatim quote from a source the user can open, never a model-written 
   are never translated and no LocalizedText is added. No change to that capability.
 - No base changes: the plan builds only on canonical specs; no other feature's active change is edited.
 
-Based on backend @ d03c1cc4ce1f941ef37a4b715c2de081ac65f379, frontend @ d89fc94d738759e936810e659df7f798a337bd4c,
-project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 80eea74d1a67f7e07075f91415415fbd3dba7444.
+Based on backend @ d03c1cc4ce1f941ef37a4b715c2de081ac65f379, frontend @ 8df0521d82acc7d94d6a90dd1751b1320f81b85f,
+project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 5981c9fdec37dc8664689f5ff2595ae797da618a.
+
+Parallel feature #53 `job-visibility` (planning) modifies other analysis-jobs-api requirements (Create job, Job
+object, List jobs, visibility); this change modifies only "Wikipedia quotes for clients", which #53 does not touch.

@@ -5,42 +5,42 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 20
+      "durationMs": 16
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 10
+      "durationMs": 6
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 3
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 1
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 1
     },
     {
       "id": "job-text-localization",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 0
     },
     {
       "id": "llm-technique-result",
@@ -89,7 +89,7 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 2
     },
     {
       "id": "wikipedia-lookup-result",
@@ -120,7 +120,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/tmp/tmp.uXiJ4R3kZT",
+    "path": "/tmp/tmp.5b5sP2RUk8",
     "source": "nearest"
   }
 }
