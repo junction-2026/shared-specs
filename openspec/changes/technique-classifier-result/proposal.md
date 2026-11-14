@@ -18,9 +18,9 @@ adapter `internal/adapter/propaganda.go`, `mistral_translation` returning
 `internal/adapter/translation.go:19-24,142`; bindings `internal/adapter/adapter.go:74-101`),
 frontend @ 3e51ec4cc5fb43c4642a142f927e9a0d99c70231 (health page only, no job client),
 project @ 441ecbf96961128099af004da50a063f18b3345c (`full-e2e` only),
-shared-specs @ 8324422d6348be58949a9f3149d7d6a772f7e94f (no active change on main;
-unmerged plan branch `plan/14-merge-the-scraper-into-the-main` modifies
-`analysis-jobs-api` and `social-scraper-api` only, disjoint from this change).
+shared-specs @ 6b5186fe71808717b0184f1ec28a4b3586a8d4d6 (active change
+`merge-scraper-drop-facebook` of junction-2026/project#14 modifies `analysis-jobs-api`
+and `social-scraper-api` only, disjoint from this change; see "Overlapping feature").
 
 ## What Changes
 
@@ -65,6 +65,26 @@ Not changed: `analysis-jobs-api`, `analysis-job-events`, `analyzer-service-proto
   exercises analyzers against ML services; backend tests use stub services.
 - **One backend task** (adapter, registry validation, display map, example, README,
   tests: about 8 files in one area).
+
+## Overlapping feature (junction-2026/project#14)
+
+#14 (`merge-scraper-drop-facebook`, IMPLEMENTING) runs in parallel and changes the
+backend local capability `analyzer-registry` (backend task `merge-scraper-into-orchestrator`).
+This plan does not contradict it:
+
+- Shared: no overlap. This change adds only `technique-classifier-result`; it does not
+  modify `analysis-jobs-api` or `social-scraper-api`, and does not read
+  `input.source.metadata.scrape` or depend on scraping (routing ignores `input.source`,
+  so scraped jobs, Facebook removal and in-process scraping do not affect it).
+- Backend `analyzer-registry`: the backend task's local change uses **ADDED requirements
+  only** (technique classifier settings, validation, example) and does not modify
+  requirements #14 may touch (`Bot detection example`, `Execution settings`,
+  `Execution validation`, `Environment placeholders`). The README gets a new
+  "Technique classifier" section; the scraper/bot-detection sections are not edited.
+  No `SCRAPER_*` variable is used or documented.
+- Whichever of the two backend PRs merges second rebases onto the other; textual
+  conflicts are limited to registry adapter-name switch statements and README, and
+  resolve by keeping both sides.
 
 ## Impact
 

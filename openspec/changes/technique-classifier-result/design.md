@@ -12,7 +12,10 @@
 No existing object, member, status or error meaning changes; no client migration is
 needed. No current client reads analyzer results (frontend @ 3e51ec4 has only the
 health page). `grep -rn "techniques\|technique_classifier" openspec/specs` on
-shared-specs @ 8324422 finds nothing, so the id and capability name are free.
+shared-specs @ 6b5186f (including the active change `merge-scraper-drop-facebook`)
+finds nothing, so the id and capability name are free. Canonical line references are
+unchanged on 6b5186f: #14's change is not archived and does not modify
+`analysis-jobs-api` "AnalyzerRun object" (spec.md:74) or "AnalyzerRun outcomes" (spec.md:81, 88).
 
 ## Offsets
 
