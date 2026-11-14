@@ -592,11 +592,15 @@ The orchestrator SHALL keep a finalizer-proposed quote only when the job's succe
 - **THEN** the quote is dropped
 
 ### Requirement: Wikipedia quotes for clients
-Clients SHALL treat an absent `wikipedia_quotes` (results stored before this member existed) as an empty array, SHALL render `quote`, `claim` and `title` as plain text, and SHALL present only `wikipedia_quotes` entries as quotations from Wikipedia.
+Clients SHALL treat an absent `wikipedia_quotes` (results stored before this member existed) as an empty array, SHALL render `quote`, `claim` and `title` as plain text, and SHALL present only `wikipedia_quotes` entries and `term_context` EncyclopediaQuote objects (term-context-result) as quotations from Wikipedia. Within the final assessment, only `wikipedia_quotes` entries SHALL be presented as quotations from Wikipedia.
 
 #### Scenario: Stored assessment without quotes
 - **WHEN** a client reads a FinalAssessment without `wikipedia_quotes`
-- **THEN** it shows no Wikipedia quotation
+- **THEN** it shows no Wikipedia quotation in the final assessment
+
+#### Scenario: Term context encyclopedia quote
+- **WHEN** a job's `term_context` result has a TermContext whose `encyclopedia` is an EncyclopediaQuote
+- **THEN** the client may present its `quote` as a quotation from Wikipedia with its `url`, outside the final assessment, while the final assessment still shows only `wikipedia_quotes` entries
 
 ### Requirement: Job visibility
 A job's `public` member SHALL be the value given at creation, `true` when the create body omits it, and SHALL NOT change afterwards; no endpoint changes it. A job stored before this member existed SHALL be reported with `public: true` and listed like other public jobs. `public: false` means unlisted, not secret: it SHALL NOT add authentication or access control, and anyone who knows the job id can read it.
