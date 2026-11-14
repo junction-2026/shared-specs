@@ -5,21 +5,21 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 33
+      "durationMs": 32
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 13
+      "durationMs": 14
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 6
     },
     {
       "id": "api-conventions",
@@ -40,28 +40,28 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 10
+      "durationMs": 9
     },
     {
       "id": "llm-technique-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 7
     },
     {
       "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 7
+      "durationMs": 6
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 5
     },
     {
       "id": "source-info-result",
@@ -82,21 +82,21 @@
       "type": "change",
       "valid": true,
       "issues": [],
-      "durationMs": 110
+      "durationMs": 112
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 5
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 4
     }
   ],
   "summary": {

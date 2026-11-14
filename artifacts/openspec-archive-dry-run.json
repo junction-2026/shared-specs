@@ -5,7 +5,7 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 34
+      "durationMs": 33
     },
     {
       "id": "analysis-jobs-api",
@@ -33,14 +33,14 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 4
     },
     {
       "id": "job-text-localization",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 2
     },
     {
       "id": "llm-technique-result",
@@ -68,14 +68,14 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 7
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 5
     },
     {
       "id": "term-context-result",
@@ -89,14 +89,14 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 6
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 5
     }
   ],
   "summary": {
@@ -120,7 +120,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/tmp/tmp.PovMY900bX",
+    "path": "/tmp/tmp.O0gW0RvfQ6",
     "source": "nearest"
   }
 }

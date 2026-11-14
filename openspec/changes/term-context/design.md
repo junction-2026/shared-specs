@@ -31,7 +31,7 @@ or new string is not breaking. The string is unrelated to the WikiLookup `covera
 (wikipedia-lookup-result, from #46): it means "no own page with a usable lead", not a passage label.
 
 ### D7. Term encyclopedia quotes may be shown as Wikipedia quotations
-Canonical analysis-jobs-api "Wikipedia quotes for clients" (spec.md:578-579, added by #46) lets clients present
+Canonical analysis-jobs-api "Wikipedia quotes for clients" (spec.md:594-595, added by #46) lets clients present
 *only* FinalAssessment `wikipedia_quotes` as quotations from Wikipedia. Read literally, it forbids the term cards.
 This change modifies that requirement: EncyclopediaQuote objects of `term_context` may also be presented as
 Wikipedia quotations, and within the final assessment only `wikipedia_quotes` are. Both kinds are verbatim and
