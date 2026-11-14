@@ -1,0 +1,147 @@
+## ADDED Requirements
+
+### Requirement: X URLs
+The scraper SHALL recognize `twitter` URLs `twitter.com/<user>` and `x.com/<user>` (profile) and `<host>/<user>/status/<id>` (post).
+
+#### Scenario: X status
+- **WHEN** a job is created with `{"scrape": {"url": "https://x.com/alice/status/1790000000000000000"}}` and X credentials are configured
+- **THEN** the scrape has `platform: twitter` and `url_kind: post`
+
+## MODIFIED Requirements
+
+### Requirement: Scraper endpoints and encoding
+The scraper SHALL run inside the orchestrator and SHALL be reached only through jobs created with `scrape` (analysis-jobs-api); it SHALL NOT serve HTTP endpoints of its own. A ScrapeResult and a scrape error SHALL be JSON objects in UTF-8 as embedded in `Job.input.source.metadata.scrape` and `Job.scrape.error`. Timestamps SHALL be RFC 3339 strings in UTC with a `Z` suffix; durations SHALL be integer milliseconds in members ending with `_ms`.
+
+#### Scenario: JSON response
+- **WHEN** a job created with `scrape` for a Bluesky profile succeeds
+- **THEN** its `input.source.metadata.scrape.scraped_at` has the form `2026-11-14T10:00:00Z` and `latency_ms` is an integer
+
+#### Scenario: No standalone scraper endpoint
+- **WHEN** a client calls `POST /scrape` or `GET /health` on the backend
+- **THEN** the backend does not scrape (these are not routes of the backend)
+
+### Requirement: Scraper tolerant reader
+ScrapeResult and scrape error objects SHALL be read as "at least these members" and value lists (platforms, URL kinds, error codes, warning codes) as "includes" lists: clients MUST ignore unknown members and MUST NOT fail on unknown values.
+
+#### Scenario: Unknown request member ignored
+- **WHEN** a job is created with `{"scrape": {"url": "https://bsky.app/profile/alice.bsky.social", "lang": "en"}}`
+- **THEN** `lang` is ignored and the scraper scrapes the profile
+
+#### Scenario: Unknown result member ignored
+- **WHEN** a ScrapeResult embedded in `source.metadata.scrape` has a member `lang` a client does not know
+- **THEN** the client ignores `lang` and reads the rest of the ScrapeResult
+
+### Requirement: Scrape request
+A scrape SHALL take the ScrapeRequest of analysis-jobs-api, `{"url", "max_posts" (default 20), "max_comments" (default 50)}`, with defaults applied and already validated by `POST /api/v1/jobs`.
+
+#### Scenario: Defaults applied
+- **WHEN** a job is created with `{"scrape": {"url": "https://mastodon.social/@alice"}}`
+- **THEN** the ScrapeResult has at most 20 `posts` and, since this is a profile URL, `comments: []`
+
+### Requirement: URL normalization before recognition
+Before recognizing a URL the scraper SHALL ignore its query string and fragment and accept hosts with an optional `www.`, `m.` or `mobile.` prefix. A recognized URL has a `platform` and a `url_kind` of `profile` or `post`.
+
+#### Scenario: Tracking parameters ignored
+- **WHEN** a job is created with `{"scrape": {"url": "https://mobile.x.com/alice/status/1790000000000000000?s=20"}}` and X credentials are configured
+- **THEN** the ScrapeResult has `platform: twitter`, `url_kind: post` and `post.id` `1790000000000000000`
+
+### Requirement: Unsupported URLs
+Any URL that is not recognized SHALL fail the scrape with `unsupported_url`, including Facebook URLs (`facebook.com`, `fb.com`, `fb.watch`; Facebook is not supported), platform paths that name no account or post (for example `x.com/explore`, `x.com/i/...`, `instagram.com/explore/...`) and hosts that do not serve the Mastodon REST API.
+
+#### Scenario: Unsupported site
+- **WHEN** a job is created with `{"scrape": {"url": "https://example.com/some/article"}}`
+- **THEN** the scrape fails with `error.code` `unsupported_url`
+
+#### Scenario: Facebook page not supported
+- **WHEN** a job is created with `{"scrape": {"url": "https://www.facebook.com/examplenews"}}`
+- **THEN** the scrape fails with `error.code` `unsupported_url`
+
+### Requirement: ScrapeResult profile members
+A successful scrape SHALL yield a ScrapeResult with at least: `platform` (includes `bluesky`, `mastodon`, `instagram`, `threads`, `twitter`); `url_kind`; `username` (handle without a leading `@`; for Mastodon `<user>@<instance>`); `display_name`, `bio`, `profile_url` (string or null); `followers`, `following`, `post_count` (integer or null); `verified` (boolean or null); `scraped_at` (timestamp); `latency_ms` (integer). For `url_kind: post` the profile members describe the post's author.
+
+#### Scenario: Unknown verification
+- **WHEN** a Mastodon account is scraped
+- **THEN** the ScrapeResult has `verified: null` unless the platform states it
+
+### Requirement: ScrapeResult content members
+A ScrapeResult SHALL also have at least: `posts` (array of Post, the author's own recent posts, newest first, at most `max_posts`); `post` (the Post the URL names when `url_kind` is `post`, otherwise null); `comments` (array of Comment on that post, oldest first, at most `max_comments`; `[]` for `url_kind: profile`); `warnings` (array of `{"code", "message"}`, default `[]`).
+
+#### Scenario: Profile scrape
+- **WHEN** a job is created with `{"scrape": {"url": "https://bsky.app/profile/alice.bsky.social", "max_posts": 5}}` for an account with 40 posts
+- **THEN** the ScrapeResult has `platform: bluesky`, `url_kind: profile`, `username: alice.bsky.social`, `post: null`, `comments: []` and 5 `posts`, newest first
+
+#### Scenario: Post scrape
+- **WHEN** a job is created with the URL of a Mastodon status that has 3 replies
+- **THEN** the ScrapeResult has `url_kind: post`, `post` set to that status, 3 `comments` oldest first and the author's recent `posts`
+
+### Requirement: Partial results and warnings
+When the requested profile or post was scraped but secondary data was not (comments, part of the history, or members the platform omitted), the scrape SHALL succeed, set those members to `[]` or null, and add a warning. Warning codes include `comments_unavailable`, `history_unavailable`, `history_truncated`, `partial_parse`. A missing key in platform data SHALL NOT cause `internal_error`.
+
+#### Scenario: Threads structure changed
+- **WHEN** the Threads page data lacks the follower count key but contains the profile and posts
+- **THEN** the scrape succeeds with `followers: null` and a warning with code `partial_parse`
+
+#### Scenario: Comments not available
+- **WHEN** Instagram returns a post but refuses its comments without login
+- **THEN** the scrape succeeds with `comments: []` and a warning with code `comments_unavailable`
+
+### Requirement: Scrape error envelope
+A failed scrape SHALL yield an error object with at least `{"code": <string>, "message": <string>, "details": <object, optional>}`; `details.platform` SHALL be set whenever the platform is known. `message` is human-readable and MUST NOT contain stack traces, tokens, cookies or other credentials. An unexpected internal failure, including a panic in a platform module, SHALL yield `internal_error` and SHALL NOT crash the orchestrator.
+
+#### Scenario: Unexpected exception
+- **WHEN** a platform module panics during a scrape
+- **THEN** the scrape fails with `internal_error` (surfaced to clients as analysis-jobs-api `scraper_unavailable`), the message contains no stack trace and the orchestrator keeps serving
+
+### Requirement: Request error codes
+Scrape error codes SHALL include `unsupported_url` (not a recognized post or profile URL, Unsupported URLs).
+
+#### Scenario: Facebook personal profile
+- **WHEN** a job is created with `{"scrape": {"url": "https://www.facebook.com/profile.php?id=100000000000001"}}`
+- **THEN** the scrape fails with `error.code` `unsupported_url`, not `unsupported_account_type` (no longer produced)
+
+### Requirement: Account and post error codes
+Scrape error codes SHALL include `account_not_found` and `post_not_found` when the account or post does not exist or was deleted, and `account_private` when the account or post is not public.
+
+#### Scenario: Private Instagram account
+- **WHEN** a job scrapes a private Instagram profile
+- **THEN** the scrape fails with `error.code` `account_private` and `details.platform` `instagram`
+
+#### Scenario: Missing account
+- **WHEN** a job scrapes `https://bsky.app/profile/does-not-exist.bsky.social`
+- **THEN** the scrape fails with `error.code` `account_not_found`
+
+### Requirement: Rate limit and credential error codes
+Scrape error codes SHALL include `rate_limited` (the platform throttled the scraper; `details.retry_after_s` set when the wait is known) and `platform_not_configured` (credentials the platform needs are not configured, including X without `TWITTER_AUTH_TOKEN` and `TWITTER_CT0`; `details.missing_settings` lists the names, never values, of missing settings).
+
+#### Scenario: X credentials missing
+- **WHEN** `TWITTER_AUTH_TOKEN` is not set and a job scrapes `https://x.com/alice`
+- **THEN** the scrape fails with `error.code` `platform_not_configured`, `details.platform` `twitter` and `details.missing_settings` containing `TWITTER_AUTH_TOKEN`
+
+#### Scenario: Rate limited
+- **WHEN** Instagram throttles the scraper
+- **THEN** the scrape fails with `error.code` `rate_limited`
+
+### Requirement: Upstream error codes
+Scrape error codes SHALL include `upstream_error` (the platform answered with an error or with data that could not be parsed into the requested profile or post), `upstream_timeout` (the platform did not answer within the scraper's upstream timeout) and `internal_error`.
+
+#### Scenario: Unparseable page
+- **WHEN** the Threads page no longer contains any recognizable profile data
+- **THEN** the scrape fails with `error.code` `upstream_error` and `details.platform` `threads`
+
+## REMOVED Requirements
+
+### Requirement: Health endpoint
+**Reason**: The scraper no longer runs as a separate service; the backend keeps its own `/healthz`.
+**Migration**: Health-check the backend with `GET /healthz`; remove probes of the scraper container.
+
+### Requirement: Bearer authentication
+**Reason**: No HTTP hop between orchestrator and scraper; there is no scraper token.
+**Migration**: Drop `SCRAPER_TOKEN` from deployments (the backend ignores it with a startup warning).
+
+### Requirement: Scrape request validation
+**Reason**: The ScrapeRequest is validated by `POST /api/v1/jobs` (analysis-jobs-api "Scrape request validation", 422 `validation_failed`).
+**Migration**: None for clients of `/api/v1/jobs`; standalone `POST /scrape` callers create jobs with `scrape` instead.
+
+### Requirement: Facebook and X URLs
+**Reason**: Facebook is not supported (it needed a browser); X recognition moves unchanged to "X URLs".
+**Migration**: Facebook URLs fail with `unsupported_url`; X URLs behave as before.
