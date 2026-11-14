@@ -47,7 +47,7 @@
       "type": "change",
       "valid": true,
       "issues": [],
-      "durationMs": 55
+      "durationMs": 57
     },
     {
       "id": "llm-technique-result",
@@ -61,49 +61,49 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 0
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 6
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 4
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 3
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 0
+      "durationMs": 1
     },
     {
       "id": "wikipedia-cross-language",
       "type": "change",
       "valid": true,
       "issues": [],
-      "durationMs": 55
+      "durationMs": 59
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 1
     }
   ],
   "summary": {
@@ -127,7 +127,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/d270c17b-8071-4899-a956-9fa6836704db",
+    "path": "/srv/junction/worktrees/shared-specs/ac91aea3-c144-4198-8d59-427eca317adf",
     "source": "nearest"
   }
 }

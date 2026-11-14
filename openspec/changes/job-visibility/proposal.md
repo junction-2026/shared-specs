@@ -1,6 +1,6 @@
 # Job visibility: unlisted analysis jobs (junction-2026/project#53)
 
-Based on backend @ d03c1cc4ce1f941ef37a4b715c2de081ac65f379, frontend @ 8df0521d82acc7d94d6a90dd1751b1320f81b85f,
+Based on backend @ d03c1cc4ce1f941ef37a4b715c2de081ac65f379, frontend @ 16b0a127095cb2c5815b67ea9f3ac1cadea76ffd,
 project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 5981c9fdec37dc8664689f5ff2595ae797da618a.
 
 ## Why
