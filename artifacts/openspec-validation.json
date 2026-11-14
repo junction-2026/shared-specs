@@ -12,63 +12,70 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 5
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 2
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 1
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 3
     },
     {
       "id": "job-text-localization",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 2
     },
     {
       "id": "llm-technique-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 2
     },
     {
       "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 1
+    },
+    {
+      "id": "propaganda-map-api",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 52
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 5
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 3
     },
     {
       "id": "technique-classifier-result",
@@ -82,14 +89,14 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 1
     },
     {
       "id": "wikipedia-cross-language",
       "type": "change",
       "valid": true,
       "issues": [],
-      "durationMs": 50
+      "durationMs": 56
     },
     {
       "id": "wikipedia-lookup-result",
@@ -101,14 +108,14 @@
   ],
   "summary": {
     "totals": {
-      "items": 14,
-      "passed": 14,
+      "items": 15,
+      "passed": 15,
       "failed": 0
     },
     "byType": {
       "change": {
-        "items": 1,
-        "passed": 1,
+        "items": 2,
+        "passed": 2,
         "failed": 0
       },
       "spec": {
@@ -120,7 +127,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/57313480-81f0-4572-9b21-18042fa873b6",
+    "path": "/srv/junction/worktrees/shared-specs/f51906f5-4b7e-40cf-848d-652a23580aa5",
     "source": "nearest"
   }
 }
