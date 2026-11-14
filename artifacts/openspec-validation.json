@@ -5,97 +5,104 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 13
+      "durationMs": 28
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 9
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 3
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 0
+      "durationMs": 1
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 8
+    },
+    {
+      "id": "job-text-localization",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 116
     },
     {
       "id": "llm-technique-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 6
     },
     {
       "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 5
+    },
+    {
+      "id": "persistent-job-history",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 117
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 3
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 9
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 7
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
+      "durationMs": 3
+    },
+    {
+      "id": "wikipedia-lookup-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
       "durationMs": 1
-    },
-    {
-      "id": "web-page-scraping",
-      "type": "change",
-      "valid": true,
-      "issues": [],
-      "durationMs": 59
-    },
-    {
-      "id": "wikipedia-claim-lookup",
-      "type": "change",
-      "valid": true,
-      "issues": [],
-      "durationMs": 49
     }
   ],
   "summary": {
     "totals": {
-      "items": 13,
-      "passed": 13,
+      "items": 14,
+      "passed": 14,
       "failed": 0
     },
     "byType": {
@@ -105,15 +112,15 @@
         "failed": 0
       },
       "spec": {
-        "items": 11,
-        "passed": 11,
+        "items": 12,
+        "passed": 12,
         "failed": 0
       }
     }
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/682d6e18-363d-40dd-b39d-cbd74d585743",
+    "path": "/srv/junction/worktrees/shared-specs/471c46bd-a0cb-40a4-917f-b1c73715defc",
     "source": "nearest"
   }
 }
