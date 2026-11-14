@@ -12,20 +12,32 @@ Lets a client read the model-written presentation texts of a finished analysis j
 - **WHEN** a client calls `GET /api/v1/jobs/j1/localization?language=ar` for a completed job
 - **THEN** the status is 200 and the body is a JobLocalization with `job_id: "j1"` and `language: "ar"`
 
+#### Scenario: Completed job in Russian
+- **WHEN** a client calls `GET /api/v1/jobs/j1/localization?language=ru` for a completed job
+- **THEN** the status is 200 and the body is a JobLocalization with `job_id: "j1"` and `language: "ru"`
+
 #### Scenario: Running job
 - **WHEN** a client requests the localization of a job with `done: false`
 - **THEN** the status is 409 with `error.code` `job_not_finished`
 
 #### Scenario: Unsupported language
 - **WHEN** a client calls it with `language=xx`
-- **THEN** the status is 400 with `error.code` `unsupported_language` and `error.details.supported` includes `en`, `fr`, `ar`, `de` and `fi`
+- **THEN** the status is 400 with `error.code` `unsupported_language` and `error.details.supported` includes `en`, `fr`, `ar`, `de`, `fi` and `ru`
 
 ### Requirement: Localization languages
-The supported localization languages SHALL include `en`, `fr`, `ar`, `de` and `fi`. The server SHALL compare `language` case-insensitively by its primary subtag (`fr-CA` means `fr`) and SHALL report the lower-case primary subtag in `JobLocalization.language`.
+The supported localization languages SHALL include `en`, `fr`, `ar`, `de`, `fi` and `ru`. The server SHALL compare `language` case-insensitively by its primary subtag (`fr-CA` means `fr`, `ru-RU` means `ru`) and SHALL report the lower-case primary subtag in `JobLocalization.language`. Clients SHALL treat the list as open: a deployment MAY support further languages and `error.details.supported` lists at least the languages named here.
 
 #### Scenario: Region subtag
 - **WHEN** a client calls it with `language=DE-at`
 - **THEN** the response has `language: "de"`
+
+#### Scenario: Russian with region subtag
+- **WHEN** a client calls it with `language=RU-ru` for a completed job
+- **THEN** the status is 200 and the response has `language: "ru"`
+
+#### Scenario: Orchestrator fixed text in Russian
+- **WHEN** a job finalized by the orchestrator with `verdict: uncertain` is localized with `language=ru`
+- **THEN** `final_assessment.user_text` has `status: translated`, `source_language: "en"` and a Russian `text`, and no LLM request is sent
 
 ### Requirement: JobLocalization object
 A JobLocalization SHALL have at least `job_id`, `language`, `final_assessment` and `llm_findings`. `final_assessment` SHALL be `{"user_text": LocalizedText}` when the job's `finalization.result` is set, otherwise null. `llm_findings` SHALL hold one LlmFindingLocalization per finding of the job's `llm_techniques` result, in result order, and SHALL be `[]` when the job has no succeeded `llm_techniques` run or it has no findings. Clients SHALL ignore unknown members.
