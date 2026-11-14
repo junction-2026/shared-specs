@@ -1,9 +1,11 @@
 # Design: job text localization
 
 ## Context
-Based on backend @ 2ee817ed, frontend @ 530723a5, shared-specs @ b4a04a19, project @ 441ecbf9.
+Based on backend @ 402553ad, frontend @ 1a14ae98, shared-specs @ b4a04a19, project @ 441ecbf9. (Backend changes since
+2ee817ed are the #43 SQLite job store only; frontend changes since 530723a5 are the VEIL brand restore only; the
+text-source table below is unaffected.)
 
-Where each user-visible result text comes from today (backend @ 2ee817ed):
+Where each user-visible result text comes from today (backend @ 402553ad):
 
 | Text | Source | Language today | Class |
 |---|---|---|---|
@@ -15,7 +17,9 @@ Where each user-visible result text comes from today (backend @ 2ee817ed):
 | `finalization.result.user_text` (finalizer) | LLM, prompt "in the language of the content" (backend config/finalizer/prompt.md:36) | content | B: new endpoint |
 | `user_text` produced_by orchestrator | fixed English (backend internal/finalizer/finalizer.go:25) | en | B: new endpoint, fixed table |
 | LLM finding `explanation` | LLM in `explanation_language` (llm-technique-result/spec.md:55) | content/en | B: new endpoint |
-| Input content, span `text`, claims, topics, news headlines, fact-check reviews | source material | original | C: verbatim, `dir`-isolated |
+| Input content, span `text`, claims, topics, news headlines, fact-check reviews, Wikipedia passages | source material | original | C: verbatim, `dir`-isolated |
+| Wikipedia `cross_language` (if #47 ships) | enum (plan/47 wikipedia-lookup-result) | n/a | A: frontend catalog, owned by #47's frontend task |
+| Wikipedia compared value `text` (if #47 ships) | verbatim substring of a passage | original | C: verbatim |
 | Ask Stiriri thread | frontend mock (frontend src/views/AskView.tsx:7), no backend | catalog | A: frontend catalog |
 
 No existing request parameter, header or endpoint selects a presentation language (grep of the canonical specs for
@@ -57,6 +61,18 @@ No shared-breaking change; no client migration required. Old frontends ignore th
 `persistent-job-history` (active, not implemented on main) adds requirements to `analysis-jobs-api` and
 `analysis-job-events`. This change modifies neither; a persisted done job is localized like any other.
 `base_changes` is empty.
+
+Since #43's backend store is merged (backend @ 402553ad), the backend task looks jobs up through the job store, not
+an in-memory map; the per-(job, language) localization cache stays in memory (spec allows a different wording after
+restart) and is not added to the SQLite schema, so it does not touch #43's `job-store` capability.
+
+`wikipedia-cross-language` (junction-2026/project#47, plan/47 @ 0a6e0c7d, awaiting approval) modifies only
+`wikipedia-lookup-result`: no shared capability in common, no contradiction. It adds no model-written text, so the
+localization endpoint has nothing to cover for it. Its frontend task (`wikipedia-lookup-view`) owns the Wikipedia
+section and its strings; this feature's frontend tasks only extend the key-completeness test, which then also
+gates that section's strings in all five locales. Both features add keys to the same locale catalogs
+(`frontend/src/i18n/locales/*`): the second to merge rebases (additive key sets, no shared keys). The backend task
+of this feature does not change `internal/adapter/wikipedia*.go`.
 
 ## Risks
 - Translation latency on first request (one provider call per job/language, all texts batched): the client shows the

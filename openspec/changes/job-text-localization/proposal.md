@@ -32,8 +32,15 @@ model-written texts of a finished job in another language without re-running the
 - frontend: static i18n audit and RTL for all views; result localization (technique catalog by `name`, request of
   the new endpoint on language switch, labelled machine translation, original quotes kept LTR/verbatim).
 - project: no new integration suite (`full-e2e` is still a placeholder); repo-ci of each repository gates the work.
-- Active shared change `persistent-job-history` touches `analysis-jobs-api` and `analysis-job-events` only; this
-  change touches neither, so there is no overlap. Persisted jobs are localized like any other done job.
+- Active shared change `persistent-job-history` (junction-2026/project#43) touches `analysis-jobs-api` and
+  `analysis-job-events` only; this change touches neither. Its backend SQLite job store is already merged
+  (backend @ 402553ad); the new route reads jobs through that store, so persisted and recovered done jobs are
+  localized like any other done job.
+- Parallel feature junction-2026/project#47 (`wikipedia-cross-language`, plan @ 0a6e0c7d) modifies
+  `wikipedia-lookup-result` only; this change does not touch it. Its new `cross_language` value is an enum (class A,
+  localized by the frontend catalog) and Wikipedia passages and compared values are original source material
+  (class C, never translated by this endpoint). Not a base change: nothing here depends on it.
 
-Based on backend @ 2ee817ed318928e5ecb2d6ce9aab822a7cc99f16, frontend @ 530723a5ee7c097b107eb9b9eb4258ec027f5663,
-project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ b4a04a191450549e9d263166bd8cc2904044cff6.
+Based on backend @ 402553adaf40e950db2f9cd0846d408ab2e79a31, frontend @ 1a14ae98aebb4160df059a3cff5e192186797c90,
+project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ b4a04a191450549e9d263166bd8cc2904044cff6
+(re-planned around junction-2026/project#47 and #43).

@@ -68,7 +68,7 @@ When `finalization.result.produced_by` is `orchestrator`, `final_assessment.user
 - **THEN** `final_assessment.user_text` has `status: translated`, `source_language: "en"` and a Finnish `text`, and no LLM request is sent
 
 ### Requirement: Localization does not re-run analysis
-Serving a localization SHALL NOT start, re-run or change any analyzer, scrape or finalization, SHALL NOT change the Job returned by `GET /api/v1/jobs/{id}` or `GET /api/v1/jobs`, and SHALL NOT emit job events. It SHALL translate only the texts named in JobLocalization; it SHALL NOT translate `Job.input`, span `text`, claims, topics, news articles, fact-check reviews or any other original source material.
+Serving a localization SHALL NOT start, re-run or change any analyzer, scrape or finalization, SHALL NOT change the Job returned by `GET /api/v1/jobs/{id}` or `GET /api/v1/jobs`, and SHALL NOT emit job events. It SHALL translate only the texts named in JobLocalization; it SHALL NOT translate `Job.input`, span `text`, claims, topics, news articles, fact-check reviews, Wikipedia passages or any other original source material.
 
 #### Scenario: Job unchanged
 - **WHEN** a client requests the localization of a completed job in three languages
@@ -96,7 +96,7 @@ Localized texts are model output influenced by untrusted content. Clients SHALL 
 - **THEN** the client shows `finalization.result.user_text` as plain text with an Arabic note that it is shown in the original language
 
 ### Requirement: Original evidence stays verbatim
-Clients SHALL show span `text`, quotations, claims, article headlines and fact-check `claim` and `rating` in their original wording in every UI language, never replaced by a translation. In a right-to-left UI they SHALL isolate such text so that its own direction is kept.
+Clients SHALL show span `text`, quotations, claims, article headlines, Wikipedia passages and fact-check `claim` and `rating` in their original wording in every UI language, never replaced by a translation. In a right-to-left UI they SHALL isolate such text so that its own direction is kept.
 
 #### Scenario: French quote on an Arabic page
 - **WHEN** the UI language is `ar` and a span `text` is French

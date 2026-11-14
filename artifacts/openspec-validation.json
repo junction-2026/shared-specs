@@ -5,14 +5,14 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 28
+      "durationMs": 30
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 9
+      "durationMs": 10
     },
     {
       "id": "analyzer-service-protocol",
@@ -40,7 +40,7 @@
       "type": "change",
       "valid": true,
       "issues": [],
-      "durationMs": 116
+      "durationMs": 122
     },
     {
       "id": "llm-technique-result",
@@ -61,7 +61,7 @@
       "type": "change",
       "valid": true,
       "issues": [],
-      "durationMs": 117
+      "durationMs": 121
     },
     {
       "id": "social-scraper-api",
@@ -82,21 +82,21 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 7
+      "durationMs": 8
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 4
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 2
     }
   ],
   "summary": {
@@ -120,7 +120,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/471c46bd-a0cb-40a4-917f-b1c73715defc",
+    "path": "/srv/junction/worktrees/shared-specs/f1f1e88d-83d1-4d63-8495-b789b134164b",
     "source": "nearest"
   }
 }
