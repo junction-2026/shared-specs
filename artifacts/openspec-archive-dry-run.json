@@ -12,24 +12,31 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 6
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 3
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 2
     },
     {
       "id": "fact-check-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
+    },
+    {
+      "id": "llm-technique-result",
       "type": "spec",
       "valid": true,
       "issues": [],
@@ -40,31 +47,38 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 0
+      "durationMs": 7
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 6
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 5
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 4
     },
     {
       "id": "topic-extraction-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 2
+    },
+    {
+      "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
@@ -73,8 +87,8 @@
   ],
   "summary": {
     "totals": {
-      "items": 10,
-      "passed": 10,
+      "items": 12,
+      "passed": 12,
       "failed": 0
     },
     "byType": {
@@ -84,15 +98,15 @@
         "failed": 0
       },
       "spec": {
-        "items": 10,
-        "passed": 10,
+        "items": 12,
+        "passed": 12,
         "failed": 0
       }
     }
   },
   "version": "1.0",
   "root": {
-    "path": "/tmp/tmp.ZsSFYLefFq",
+    "path": "/tmp/tmp.nIspvKPStm",
     "source": "nearest"
   }
 }

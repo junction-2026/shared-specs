@@ -5,63 +5,70 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 16
+      "durationMs": 13
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 7
+      "durationMs": 4
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 1
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 0
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 3
+    },
+    {
+      "id": "llm-technique-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 2
     },
     {
       "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 1
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 1
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 4
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 3
     },
     {
       "id": "topic-extraction-result",
@@ -75,31 +82,38 @@
       "type": "change",
       "valid": true,
       "issues": [],
-      "durationMs": 52
+      "durationMs": 59
+    },
+    {
+      "id": "wikipedia-claim-lookup",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 49
     }
   ],
   "summary": {
     "totals": {
-      "items": 11,
-      "passed": 11,
+      "items": 13,
+      "passed": 13,
       "failed": 0
     },
     "byType": {
       "change": {
-        "items": 1,
-        "passed": 1,
+        "items": 2,
+        "passed": 2,
         "failed": 0
       },
       "spec": {
-        "items": 10,
-        "passed": 10,
+        "items": 11,
+        "passed": 11,
         "failed": 0
       }
     }
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/e60d7d46-afde-4271-a7ba-494516a901e8",
+    "path": "/srv/junction/worktrees/shared-specs/682d6e18-363d-40dd-b39d-cbd74d585743",
     "source": "nearest"
   }
 }
