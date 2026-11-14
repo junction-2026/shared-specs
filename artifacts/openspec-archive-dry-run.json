@@ -1,0 +1,70 @@
+{
+  "items": [
+    {
+      "id": "analysis-job-events",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 16
+    },
+    {
+      "id": "analysis-jobs-api",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 8
+    },
+    {
+      "id": "analyzer-service-protocol",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 4
+    },
+    {
+      "id": "api-conventions",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 3
+    },
+    {
+      "id": "social-scraper-api",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 2
+    },
+    {
+      "id": "topic-extraction-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
+    }
+  ],
+  "summary": {
+    "totals": {
+      "items": 6,
+      "passed": 6,
+      "failed": 0
+    },
+    "byType": {
+      "change": {
+        "items": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      "spec": {
+        "items": 6,
+        "passed": 6,
+        "failed": 0
+      }
+    }
+  },
+  "version": "1.0",
+  "root": {
+    "path": "/tmp/tmp.UGvvxnJrkW",
+    "source": "nearest"
+  }
+}
