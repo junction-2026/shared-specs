@@ -14,4 +14,4 @@
 ## 3. Backend orchestrator (child `backend-scrape-job-input`)
 - [ ] 3.1 `scrape` request member, validation and `scrape_unavailable`
 - [ ] 3.2 Scrape phase, input mapping, failure and cancellation outcomes, events
-- [ ] 3.3 Tests against a stub scraper; bot-detection example config
+- [ ] 3.3 Tests against a stub scraper; new `docs/examples/bot_detection.yaml` (no change to the propaganda example or project#7's translation analyzer)

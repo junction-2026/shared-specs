@@ -2,7 +2,7 @@
 
 ## Context
 
-Canonical shared specs at shared-specs @ 729fe96 define text-only job input
+Canonical shared specs at shared-specs @ 259af8c define text-only job input
 (`openspec/specs/analysis-jobs-api/spec.md:8-17`). The handover proposes a separate
 FastAPI scraper (`POST /scrape {url, max_posts}`, Bearer auth, `GET /health`). The
 backend orchestrator (Go, backend @ fbf9e6f, which already contains the project#6
@@ -49,15 +49,15 @@ input (no submission form exists yet).
    `timeout`, `cancelled` and `no_text_content`. A scraper 401 (wrong orchestrator
    token) is reported as `scraper_unavailable`, a configuration problem, not a user
    error.
-7. **Parallel with project#6 (`llm-finalizer-verdict`), no contradicting delta.**
-   That change modifies analysis-jobs-api "Finalization outcomes", "FinalAssessment
+7. **After project#6 (`llm-finalizer-verdict`, now archived into canonical
+   analysis-jobs-api @ 259af8c), no contradicting delta.** That change modified analysis-jobs-api "Finalization outcomes", "FinalAssessment
    object", "Insufficient evidence without fabricated score" and "Registry listing
    hides execution settings", adds "Verdict values", "Confidence semantics", "User
    text rendering", "Finalization errors hide credentials", removes "Overall score
    semantics", "Assessment categories", "Evidence references and limitations", and
    changes analyzer-service-protocol finalizer requirements. This change modifies or
-   removes none of them and references no FinalAssessment member, so the two deltas
-   archive independently in either order. Interactions, stated so both hold:
+   removes none of them (its MODIFIED requirements are all at canonical
+   `spec.md:15-77`, untouched by project#6) and references no FinalAssessment member. Interactions, stated so both hold:
    - The finalization skip reason `input_unavailable` is added in the ADDED
      requirement "Scrape failure outcomes"; "Finalization outcomes" lists reasons as
      "including" (api-conventions tolerant enums), so no edit of it is needed.
@@ -74,19 +74,36 @@ input (no submission form exists yet).
    - Scrape error messages follow the same no-credentials rule as project#6's
      "Finalization errors hide credentials" (stated in "Scrape failure causes").
 
+8. **Parallel with project#7 (Mistral translation analyzer, backend-local
+   `backend-mistral-translation`, capability `backend/analyzer-registry`).** project#7
+   has no shared change, so no shared requirement is contested. Rules for the
+   backend children so the two features do not contradict:
+   - This feature does not modify `docs/examples/propaganda_detection.yaml`, the
+     translation analyzer's example, `internal/registry`, or the backend
+     analyzer-registry requirements "Propaganda detection example" and any
+     requirement project#7 adds. Its only analyzer-registry change is one ADDED
+     requirement "Bot detection example" for a new file
+     `docs/examples/bot_detection.yaml`, and a separate README section.
+   - Scrape jobs need nothing from the translation analyzer: once the scrape
+     succeeds, `Job.input.content` is the post text or joined history, and every
+     analyzer (translation, then propaganda_detection bound to its output under
+     project#7) runs on it exactly as on a text job. Before that, no analyzer starts.
+   - If project#7 merges first, the registry wiring it documents applies
+     to scrape jobs unchanged; if this merges first, project#7 needs no change.
+
 ## Compatibility classification
 
 Every place that uses an object or endpoint this change touches (canonical
-shared-specs @ 729fe96):
+shared-specs @ 259af8c, which includes the archived project#6 change):
 
 | Change | Used at | Class |
 |---|---|---|
 | `POST /api/v1/jobs` accepts `scrape` instead of `input` | analysis-jobs-api `spec.md:15-20`; api-conventions `spec.md:33,37,59` | shared-additive: new optional member; every existing body stays valid with the same result |
 | New validation cases and 503 `scrape_unavailable` | analysis-jobs-api `spec.md:22-27`; api-conventions common codes `spec.md:29-38` | shared-additive: new code on a new condition; existing cases keep their status |
-| Job gains `scrape` (null for text jobs) | Job object `spec.md:44-49`; Get job `spec.md:157-162`; `job.snapshot` events `spec.md:22-31`; terminal events `spec.md:47-52` | shared-additive: new member |
+| Job gains `scrape` (null for text jobs) | Job object `spec.md:44-49`; Get job `spec.md:144-149`; `job.snapshot` events `spec.md:22-31`; terminal events `spec.md:47-52` | shared-additive: new member |
 | `Job.input` is null while a scrape job is `scraping` or after its scrape failed | Job object `spec.md:44-49`; snapshot and terminal events (as above); `$input` binding `analyzer-service-protocol/spec.md:22-23` | **shared-breaking** (type of an existing member becomes nullable), limited to jobs created with the new `scrape` member; text jobs are unchanged. Affected clients: frontend — none today (no jobs client); backend analyzers never see it because no analyzer starts before the scrape succeeded. Migration: clients that render `input` treat null as "not yet available" and show `scrape.url` |
-| New status `scraping`; `failed` also for failed scrapes | Job status `spec.md:51-56`; List jobs status filter `spec.md:164-169`; tolerant enums api-conventions `spec.md:61-63` | shared-additive: new value on a new case; clients handle unknown status via `done`; no existing case changes status |
-| Skip reason `input_unavailable` (AnalyzerRun and Finalization) | AnalyzerRun outcomes `spec.md:72-77`; Finalization outcomes `spec.md:107-117`; Coverage `spec.md:93-98` | shared-additive: new value in "includes" lists |
+| New status `scraping`; `failed` also for failed scrapes | Job status `spec.md:51-56`; List jobs status filter `spec.md:151-156`; tolerant enums api-conventions `spec.md:61-63` | shared-additive: new value on a new case; clients handle unknown status via `done`; no existing case changes status |
+| Skip reason `input_unavailable` (AnalyzerRun and Finalization) | AnalyzerRun outcomes `spec.md:72-77`; Finalization outcomes `spec.md:104-114`; Coverage `spec.md:90-95` | shared-additive: new value in "includes" lists |
 | Events `scrape.started/succeeded/failed`; lifecycle restated | analysis-job-events `spec.md:15-20` (unknown types ignored), `40-52`, `68-77` | shared-additive: new event types; existing text-job ordering unchanged |
 | New capability `social-scraper-api` | none (new) | shared-additive |
 

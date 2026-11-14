@@ -13,9 +13,10 @@ the merged project#6 LLM finalizer; no scraper code; `internal/job`, `internal/h
 `internal/finalizer`), frontend @ 3e51ec4cc5fb43c4642a142f927e9a0d99c70231 (health
 page only; no client of `/api/v1/jobs`), project @
 441ecbf96961128099af004da50a063f18b3345c (`full-e2e` is a placeholder), shared-specs @
-729fe96720e155868fb944c773470ac4619779f0 (active change `llm-finalizer-verdict` of
-project#6, approved to run in parallel; no requirement modified by both changes, see
-design.md decision 7).
+259af8c2887a71cf16198dcca6112e8416f105f8 (project#6 `llm-finalizer-verdict` archived
+into the canonical specs; no other active shared change). Planned in parallel with
+project#7 (Mistral translation analyzer, backend-local only, no shared change); see
+design.md decisions 7 and 8.
 
 ## What Changes
 
@@ -64,5 +65,7 @@ analyzer-service-protocol (analyzers receive the scraped data through the existi
 ## Impact
 
 - backend: scraper service (`scraper/`), orchestrator scrape phase, config
-  `SCRAPER_URL`, `SCRAPER_TOKEN`, `SCRAPER_TIMEOUT`, example bot-detection analyzer.
+  `SCRAPER_URL`, `SCRAPER_TOKEN`, `SCRAPER_TIMEOUT`, a new example
+  `docs/examples/bot_detection.yaml` (the propaganda example and the project#7
+  translation analyzer are not touched).
 - frontend, project: no change in this feature.
