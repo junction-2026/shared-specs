@@ -1,8 +1,8 @@
 ## Context
 
-Canonical `social-scraper-api` (shared-specs @ ee96c66, after #24 `remove-closed-platform-scraping` was archived) has two platforms, `bluesky` and `mastodon`. Every other URL fails with `unsupported_url` (`social-scraper-api/spec.md:59-72`).
+Canonical `social-scraper-api` (shared-specs @ 43df3d1, after #24 `remove-closed-platform-scraping` and #25 `llm-reply-retry` were archived) has two platforms, `bluesky` and `mastodon`. Every other URL fails with `unsupported_url` (`social-scraper-api/spec.md:59-72`).
 
-Backend @ dfe8c12: `internal/socialscraper/urls.go` `Recognize` maps a URL to a `Target` without network access and excludes only `bsky.app` from Mastodon recognition (`urls.go:23`); the Mastodon module returns `unsupported_url` when the host does not serve the Mastodon API (`internal/socialscraper/mastodon/mastodon.go:105`); `internal/scraper/scraper.go` `mapResult` builds `Job.input` from `post`/`posts` and treats any unknown `url_kind` like a profile (`scraper.go:113`). The job-level scrape timeout defaults to 120 s (`internal/engine/engine.go:154`, `SCRAPER_TIMEOUT`).
+Backend @ 88830ca (scraper code unchanged since dfe8c12): `internal/socialscraper/urls.go` `Recognize` maps a URL to a `Target` without network access and excludes only `bsky.app` from Mastodon recognition (`urls.go:23`); the Mastodon module returns `unsupported_url` when the host does not serve the Mastodon API (`internal/socialscraper/mastodon/mastodon.go:105`); `internal/scraper/scraper.go` `mapResult` builds `Job.input` from `post`/`posts` and treats any unknown `url_kind` like a profile (`scraper.go:113`). The job-level scrape timeout defaults to 120 s (`internal/engine/engine.go:154`, `SCRAPER_TIMEOUT`).
 
 ## Goals / Non-Goals
 
@@ -12,7 +12,7 @@ Goals: a `web`/`page` result that frontend, analyzers and backend can read concu
 
 ### D1: Written against the canonical specs
 
-This change MODIFIES canonical requirements (`URL normalization before recognition`, `Bluesky and Mastodon URLs`, `Unsupported URLs`, `ScrapeResult profile members`, `Request error codes`; analysis-jobs-api `Scraped input content`, `Scraped input source`, `Scrape failure causes`, `Scraper unavailable`, `Scrape failure outcomes`) and keeps every existing scenario name. Web behaviour is in new requirements (`Web page fallback`, `Page profile members`, `Local hosts not scraped`, `Mastodon probe fallback`, `Web page …` members, text, Markdown fallback, rendering and retries, cache, configuration error, error codes, login wall; analysis-jobs-api `Scraped page source`). The only other active change, `llm-reply-retry`, modifies different analysis-jobs-api requirements (FinalAssessment, LLM retry); no overlap.
+This change MODIFIES canonical requirements (`URL normalization before recognition`, `Bluesky and Mastodon URLs`, `Unsupported URLs`, `ScrapeResult profile members`, `Request error codes`; analysis-jobs-api `Scraped input content`, `Scraped input source`, `Scrape failure causes`, `Scraper unavailable`, `Scrape failure outcomes`) and keeps every existing scenario name. Web behaviour is in new requirements (`Web page fallback`, `Page profile members`, `Local hosts not scraped`, `Mastodon probe fallback`, `Web page …` members, text, Markdown fallback, rendering and retries, cache, configuration error, error codes, login wall; analysis-jobs-api `Scraped page source`). No other change is active. `llm-reply-retry` (#25, now archived into canonical) changed different analysis-jobs-api requirements (FinalAssessment, LLM reply retry) and topic-extraction-result; none overlaps the requirements modified here, whose canonical text this delta keeps.
 
 ### D2: `login_required` re-introduced for `web` only
 
@@ -42,7 +42,7 @@ A rendered fetch needs a client timeout of at least 150 s. The backend raises th
 
 ## Compatibility classification
 
-Usages found with `grep -rn` in canonical shared specs @ ee96c66:
+Usages found with `grep -rn` in canonical shared specs @ 43df3d1:
 
 | Item | Where used | Change | Class |
 |---|---|---|---|

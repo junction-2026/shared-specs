@@ -2,7 +2,7 @@
 
 Scrape jobs (`{"scrape": {"url": ...}}`) only work for Bluesky and Mastodon since junction-2026/project#24 removed the other social platforms. News articles, blogs and every other link fail with `unsupported_url`, although `source_info` already looks up `input.source.url` and would give outlet, country and leaning for news pages. junction-2026/project#26 adds a generic `web` platform: any other http(s) page is fetched through a paid scraping provider (Oxylabs), its main text and metadata are extracted, and the normal analysis runs on that text.
 
-Based on backend @ dfe8c12b98ebd33cbd038c8863e9086f09718618, frontend @ 1abe19a7fa41cea9a083eebc699f328dc58e904a, project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ ee96c66b2ae1ddc6d3ccd8580fff23865568454b (canonical specs after #24 was archived).
+Based on backend @ 88830ca866a205c2e39e0d28b7b6c913f43897ca, frontend @ 1abe19a7fa41cea9a083eebc699f328dc58e904a, project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 43df3d163ab87fbb94f2ce153f35c620fd816c65 (canonical specs after #24 and #25 were archived).
 
 ## What Changes
 
