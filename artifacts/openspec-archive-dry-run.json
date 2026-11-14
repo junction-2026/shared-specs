@@ -19,7 +19,7 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 7
     },
     {
       "id": "api-conventions",
@@ -33,31 +33,24 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 4
     },
     {
       "id": "job-text-localization",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 2
     },
     {
       "id": "llm-technique-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 15
-    },
-    {
-      "id": "news-search-result",
-      "type": "spec",
-      "valid": true,
-      "issues": [],
       "durationMs": 13
     },
     {
-      "id": "propaganda-map-api",
+      "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
@@ -68,21 +61,28 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 9
+      "durationMs": 10
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 7
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 5
+    },
+    {
+      "id": "term-context-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 2
     },
     {
       "id": "topic-extraction-result",
@@ -120,7 +120,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/tmp/tmp.nG9HIRjjEk",
+    "path": "/tmp/tmp.O0gW0RvfQ6",
     "source": "nearest"
   }
 }

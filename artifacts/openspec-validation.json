@@ -12,7 +12,7 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 13
+      "durationMs": 14
     },
     {
       "id": "analyzer-service-protocol",
@@ -47,7 +47,7 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 7
     },
     {
       "id": "news-search-result",
@@ -55,13 +55,6 @@
       "valid": true,
       "issues": [],
       "durationMs": 6
-    },
-    {
-      "id": "propaganda-map-api",
-      "type": "change",
-      "valid": true,
-      "issues": [],
-      "durationMs": 99
     },
     {
       "id": "social-scraper-api",
@@ -85,18 +78,25 @@
       "durationMs": 8
     },
     {
+      "id": "term-context",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 112
+    },
+    {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 5
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 4
     }
   ],
   "summary": {
@@ -120,7 +120,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/2c73ce8b-80c4-46fd-a2f4-246a80eaea49",
+    "path": "/srv/junction/worktrees/shared-specs/c9cca6aa-c053-4976-a52c-4cc38199ba9a",
     "source": "nearest"
   }
 }
