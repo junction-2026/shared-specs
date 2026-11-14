@@ -5,98 +5,98 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 30
+      "durationMs": 14
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 10
+      "durationMs": 4
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 1
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 0
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 4
     },
     {
       "id": "job-text-localization",
       "type": "change",
       "valid": true,
       "issues": [],
-      "durationMs": 122
+      "durationMs": 58
     },
     {
       "id": "llm-technique-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 3
     },
     {
       "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
-    },
-    {
-      "id": "persistent-job-history",
-      "type": "change",
-      "valid": true,
-      "issues": [],
-      "durationMs": 121
+      "durationMs": 2
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 1
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 9
+      "durationMs": 5
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 4
+    },
+    {
+      "id": "term-context",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 48
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 2
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 1
     }
   ],
   "summary": {
@@ -120,7 +120,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/f1f1e88d-83d1-4d63-8495-b789b134164b",
+    "path": "/srv/junction/worktrees/shared-specs/3e1baf1c-5d24-4542-a284-fcdb59f2e4e9",
     "source": "nearest"
   }
 }
