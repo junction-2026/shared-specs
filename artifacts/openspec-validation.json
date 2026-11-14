@@ -5,63 +5,56 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 12
+      "durationMs": 15
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 7
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 3
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 0
+      "durationMs": 2
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 1
     },
     {
       "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
-    },
-    {
-      "id": "scrape-login-required",
-      "type": "change",
-      "valid": true,
-      "issues": [],
-      "durationMs": 45
+      "durationMs": 7
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 6
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 5
     },
     {
       "id": "technique-all-labels",
@@ -75,26 +68,26 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 4
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 2
     }
   ],
   "summary": {
     "totals": {
-      "items": 12,
-      "passed": 12,
+      "items": 11,
+      "passed": 11,
       "failed": 0
     },
     "byType": {
       "change": {
-        "items": 2,
-        "passed": 2,
+        "items": 1,
+        "passed": 1,
         "failed": 0
       },
       "spec": {
@@ -106,7 +99,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/b3724310-124a-40dd-b7a0-731477fc4c61",
+    "path": "/srv/junction/worktrees/shared-specs/efe2ee50-0e77-4bac-a025-d41d4d9dc72a",
     "source": "nearest"
   }
 }
