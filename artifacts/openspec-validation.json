@@ -5,35 +5,35 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 13
+      "durationMs": 12
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 4
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 1
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 0
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 3
     },
     {
       "id": "news-search-result",
@@ -41,6 +41,13 @@
       "valid": true,
       "issues": [],
       "durationMs": 2
+    },
+    {
+      "id": "scrape-login-required",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 45
     },
     {
       "id": "social-scraper-api",
@@ -51,17 +58,24 @@
     },
     {
       "id": "source-info-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
+    },
+    {
+      "id": "technique-all-labels",
       "type": "change",
       "valid": true,
       "issues": [],
-      "durationMs": 37
+      "durationMs": 46
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 3
     },
     {
       "id": "topic-extraction-result",
@@ -73,26 +87,26 @@
   ],
   "summary": {
     "totals": {
-      "items": 10,
-      "passed": 10,
+      "items": 12,
+      "passed": 12,
       "failed": 0
     },
     "byType": {
       "change": {
-        "items": 1,
-        "passed": 1,
+        "items": 2,
+        "passed": 2,
         "failed": 0
       },
       "spec": {
-        "items": 9,
-        "passed": 9,
+        "items": 10,
+        "passed": 10,
         "failed": 0
       }
     }
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/bb14960b-4902-48d8-8863-8deadf10a923",
+    "path": "/srv/junction/worktrees/shared-specs/b3724310-124a-40dd-b7a0-731477fc4c61",
     "source": "nearest"
   }
 }

@@ -19,14 +19,14 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 3
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 2
     },
     {
       "id": "fact-check-result",
@@ -61,7 +61,7 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 2
     },
     {
       "id": "topic-extraction-result",
@@ -92,7 +92,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/tmp/tmp.z6WoCeQ6QQ",
+    "path": "/tmp/tmp.xNyMQZTFnC",
     "source": "nearest"
   }
 }
