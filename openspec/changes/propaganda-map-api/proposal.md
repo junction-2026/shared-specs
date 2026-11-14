@@ -42,3 +42,7 @@ each country has, with a per-country list of those analyses.
   `fi`, `ru`) in different namespaces (#49 results/term cards, #59 `explore`), so they do not collide.
   `job-visibility` (#53), `wikipedia-cross-language` (#47) and `russian-localization-language` (#60) are archived on
   main; this change reads the canonical `public` member (non-public jobs never appear on the map).
+- `analysis-chat-api` (#57, proposed, parallel) adds only `POST /api/v1/jobs/{id}/chat`: disjoint from
+  `/api/v1/map/*`, no shared contradiction. Local overlap on backend `orchestrator-http-server` and frontend
+  `backend-api-client` is append-only in separate files/requirements; frontend `secondary-screens` is not modified by
+  this feature (see design.md "Overlap with analysis-chat-api").

@@ -68,6 +68,25 @@ reads only `source_info` and `input.source.url`). The new `term_context` run in 
 job's `done` state semantics, so the "Map values fixed when done" derivation is unaffected. No contradiction in
 either archive order.
 
+## Overlap with analysis-chat-api (#57, proposed, parallel)
+`analysis-chat-api` (plan branch `plan/57-ask-veil-chat-about-a-finished-a` @ 5ce501b) adds only
+`POST /api/v1/jobs/{id}/chat`; this change adds only `GET /api/v1/map/*`. The paths, objects and error conditions are
+disjoint, neither modifies a canonical requirement, and chat never changes a job (so it never changes map values).
+No shared contradiction in either merge or archive order; nothing here builds on it, so `base_changes` stays empty.
+Local overlap (approver allowed parallel work) is kept to append-only edits in different requirements and files:
+- backend `orchestrator-http-server`: this feature adds one `route(basePath+"/map/...")` pair in
+  `internal/httpapi/httpapi.go` (next to the existing `route` calls, httpapi.go:80-88) and puts its handlers in a new
+  `internal/httpapi/map.go`; #57 adds its chat route and its own handler file. Only ADDED requirements in the local
+  delta; no existing orchestrator-http-server requirement is modified.
+- frontend `backend-api-client`: this feature appends `getMapCountries` and `listCountryAnalyses` at the end of
+  `src/api/client.ts` and puts its tolerant types in a new `src/api/mapTypes.ts` (not `types.ts`); one ADDED
+  requirement "Propaganda map client"; existing requirements are not modified.
+- frontend `secondary-screens`: not modified by this feature. The global map lives in the `explore-coverage`
+  capability (`src/explore/`, `src/views/ExploreView.tsx`); the Explore country panel keeps its "Inspect wire feeds →"
+  link, so "Explore and Region screens" / "Explore and Region navigation" still hold. #57 changes only the Ask screen.
+- frontend i18n: strings only in the `explore` namespace (`src/i18n/locales/<lang>/explore.ts`); #57 uses `ask`, #49
+  uses results/term namespaces; the i18n runtime is not touched.
+
 ## Non-shared (local) parts
 - backend: persisted map columns/table, migration + backfill, Memory-store derivation, query/index strategy, tests.
 - frontend: global map mode on `/explore`, shading scale, legend, tooltip, panel, keyboard/touch, i18n in all six
