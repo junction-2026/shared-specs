@@ -35,6 +35,16 @@ No shared-breaking change. A server without this change ignores `q` (request tol
 clients treat a missing `excerpt` as null. The frontend and backend ship together in one feature group.
 The "List jobs" requirement already reads "at least"; it is kept in that style.
 
+## Parallel feature junction-2026/project#64 (`manipulation-risk-score`, implementing)
+- Shared spec: #64 only ADDS "Job risk member" (Job `risk`) to `analysis-jobs-api` and an event requirement to
+  `analysis-job-events`; it does not touch "List jobs" or JobSummary. This change MODIFIES only "List jobs" and ADDS
+  requirements with new names, so both deltas archive cleanly in either order. JobSummary does not gain `risk`.
+- Backend: both features touch the job store. This feature adds no schema migration (the append-only
+  `migrations` list in `internal/store/sqlite.go` is where #64 may add one), so the two never claim the same
+  migration index; search is evaluated in Go over the stored job (e.g. a registered SQL function or a filtered scan).
+- Frontend: #64 changes the Results screen; this feature changes only the History screen, `listJobs`/JobSummary
+  types and `history` catalog keys, so the edits are in different blocks of shared files (types, catalogs).
+
 ## Risks
 - Search over the SQLite history decodes or scans `data` JSON per row; acceptable at current history sizes and
   bounded by the 200-character query. The backend may add a column or index locally; that is not part of the contract.

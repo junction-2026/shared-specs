@@ -1,6 +1,6 @@
 # History search and job excerpts in the job list (junction-2026/project#67)
 
-Based on backend @ b5a606614a3f70f2f1ca10951a7dfbc49d832e7e, frontend @ 28d228d53f817abb249285ee417f2e80237ff04d,
+Based on backend @ b5a606614a3f70f2f1ca10951a7dfbc49d832e7e, frontend @ a75d71fb7c0537e2f61888009345aa33f00c1c51,
 project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 3949bec3d32a399427d239e3147239fa1e716cfe
 (main with `manipulation-risk-score` #64 active; it adds a Job `risk` member in `analysis-jobs-api` and leaves
 `GET /api/v1/jobs` and JobSummary unchanged, so this change neither modifies nor builds on it).

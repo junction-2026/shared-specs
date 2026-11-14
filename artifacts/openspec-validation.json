@@ -2,24 +2,24 @@
   "items": [
     {
       "id": "analysis-chat-api",
-      "type": "change",
+      "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 56
+      "durationMs": 30
     },
     {
       "id": "analysis-job-events",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 14
+      "durationMs": 13
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 9
     },
     {
       "id": "analyzer-service-protocol",
@@ -33,108 +33,122 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 6
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 5
+    },
+    {
+      "id": "history-search-and-excerpt",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 115
     },
     {
       "id": "job-text-localization",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 0
+      "durationMs": 3
     },
     {
       "id": "llm-technique-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 2
+    },
+    {
+      "id": "manipulation-risk-score",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 135
     },
     {
       "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 8
     },
     {
       "id": "propaganda-map-api",
-      "type": "change",
+      "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 56
+      "durationMs": 6
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 4
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 1
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 11
     },
     {
-      "id": "term-context",
-      "type": "change",
+      "id": "term-context-result",
+      "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 64
+      "durationMs": 8
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 6
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 4
     }
   ],
   "summary": {
     "totals": {
-      "items": 16,
-      "passed": 16,
+      "items": 18,
+      "passed": 18,
       "failed": 0
     },
     "byType": {
       "change": {
-        "items": 3,
-        "passed": 3,
+        "items": 2,
+        "passed": 2,
         "failed": 0
       },
       "spec": {
-        "items": 13,
-        "passed": 13,
+        "items": 16,
+        "passed": 16,
         "failed": 0
       }
     }
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/fbb97652-45b0-4856-8b87-4009b930dcc3",
+    "path": "/srv/junction/worktrees/shared-specs/2f666725-a988-40a1-b2f7-32b8a2edc22f",
     "source": "nearest"
   }
 }
