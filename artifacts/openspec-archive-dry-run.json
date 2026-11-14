@@ -5,90 +5,97 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 31
+      "durationMs": 23
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 12
+      "durationMs": 9
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 3
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 2
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 1
+    },
+    {
+      "id": "job-text-localization",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 0
     },
     {
       "id": "llm-technique-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 8
     },
     {
       "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 15
+      "durationMs": 7
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 13
+      "durationMs": 6
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 10
+      "durationMs": 4
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 3
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 0
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 1
     }
   ],
   "summary": {
     "totals": {
-      "items": 12,
-      "passed": 12,
+      "items": 13,
+      "passed": 13,
       "failed": 0
     },
     "byType": {
@@ -98,15 +105,15 @@
         "failed": 0
       },
       "spec": {
-        "items": 12,
-        "passed": 12,
+        "items": 13,
+        "passed": 13,
         "failed": 0
       }
     }
   },
   "version": "1.0",
   "root": {
-    "path": "/tmp/tmp.k6mh1Wawk9",
+    "path": "/tmp/tmp.jDz6V6r2G9",
     "source": "nearest"
   }
 }

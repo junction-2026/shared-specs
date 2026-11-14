@@ -3,9 +3,17 @@
 ## Base
 - W2 is archived (`openspec/changes/archive/2026-11-14-wikipedia-claim-lookup`) and canonical in
   `openspec/specs/wikipedia-lookup-result/spec.md`; backend implements it in `internal/adapter/wikipedia.go`
-  (`claimLookup` struct, lines 43-48). The only active shared change, `persistent-job-history`, touches
-  `analysis-jobs-api` / `analysis-job-events` only: no overlap.
-- Frontend @ 530723a has no code reading the `wikipedia` AnalyzerRun (grep for `wikipedia` in `frontend/src`: none),
+  (`claimLookup` struct, lines 43-48 @ 402553ad). `persistent-job-history` is now archived; the only active shared
+  change on main @ 07b1fce, `job-text-localization` (#45), touches `job-text-localization` and
+  `technique-classifier-result` only. It already classifies `cross_language` as an enum the frontend localizes and
+  compared-value `text` as verbatim source material (its design.md), consistent with this change. `base_changes` is
+  empty.
+- Parallel plan #46 (`wikipedia-passage-coverage`, plan branch, not on main) adds WikiLookup `coverage`
+  (`no_coverage`/`mentioned`/`aligned`/`conflicts`, passage vs. claim) and MODIFIES "No verdict from Wikipedia
+  lookup". This change MODIFIES only "ClaimLookup object" and adds new requirement names, so the two deltas archive
+  independently in either order. Semantics do not overlap: `cross_language` compares the two passages with each
+  other and never reads or sets `coverage`; a `gap` is never a `conflicts`.
+- Frontend @ 1a14ae9 has no code reading the `wikipedia` AnalyzerRun (grep for `wikipedia` in `frontend/src`: none),
   project @ 441ecbf has no E2E for it. So no existing client reads ClaimLookup.
 
 ## Shape
