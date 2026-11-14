@@ -5,7 +5,8 @@
 Canonical shared specs at shared-specs @ 729fe96 define text-only job input
 (`openspec/specs/analysis-jobs-api/spec.md:8-17`). The handover proposes a separate
 FastAPI scraper (`POST /scrape {url, max_posts}`, Bearer auth, `GET /health`). The
-backend orchestrator (Go, backend @ 554a945) has no scraper client. The frontend
+backend orchestrator (Go, backend @ fbf9e6f, which already contains the project#6
+LLM finalizer) has no scraper client. The frontend
 (@ 3e51ec4) does not call `/api/v1/jobs` at all (`grep -rn "api/v1\|jobs" src` is
 empty), so no client reads the job objects yet.
 
@@ -48,14 +49,30 @@ input (no submission form exists yet).
    `timeout`, `cancelled` and `no_text_content`. A scraper 401 (wrong orchestrator
    token) is reported as `scraper_unavailable`, a configuration problem, not a user
    error.
-7. **No overlap with the active change `llm-finalizer-verdict`.** That change modifies
-   analysis-jobs-api "Finalization outcomes", "FinalAssessment object", "Insufficient
-   evidence without fabricated score" and "Registry listing hides execution
-   settings", and analyzer-service-protocol finalizer requirements. This change
-   modifies none of them: the new finalization skip reason `input_unavailable` is
-   stated in the ADDED requirement "Scrape failure outcomes" (reason lists are
-   "includes" lists, api-conventions `spec.md:62-63`). Both archive independently in
-   either order.
+7. **Parallel with project#6 (`llm-finalizer-verdict`), no contradicting delta.**
+   That change modifies analysis-jobs-api "Finalization outcomes", "FinalAssessment
+   object", "Insufficient evidence without fabricated score" and "Registry listing
+   hides execution settings", adds "Verdict values", "Confidence semantics", "User
+   text rendering", "Finalization errors hide credentials", removes "Overall score
+   semantics", "Assessment categories", "Evidence references and limitations", and
+   changes analyzer-service-protocol finalizer requirements. This change modifies or
+   removes none of them and references no FinalAssessment member, so the two deltas
+   archive independently in either order. Interactions, stated so both hold:
+   - The finalization skip reason `input_unavailable` is added in the ADDED
+     requirement "Scrape failure outcomes"; "Finalization outcomes" lists reasons as
+     "including" (api-conventions tolerant enums), so no edit of it is needed.
+   - After a failed scrape the finalizer is not called and no insufficient-evidence
+     assessment (`verdict: uncertain`, `produced_by: orchestrator`) is produced:
+     the job is `failed`, not `completed`. After a successful scrape every
+     project#6 rule applies unchanged, including the insufficient-evidence
+     short-circuit when no opted-in analyzer succeeded.
+   - The backend-local `llm` adapter (backend `analysis-finalizer` "LLM prompt
+     assembly") sends `normalized_content` only, so for scrape jobs the LLM sees the
+     post text or joined history, never `source.metadata.scrape`; author signals
+     reach it only through analyzer results of analyzers opted in with
+     `llm.include` (backend-local registry config, not shared).
+   - Scrape error messages follow the same no-credentials rule as project#6's
+     "Finalization errors hide credentials" (stated in "Scrape failure causes").
 
 ## Compatibility classification
 

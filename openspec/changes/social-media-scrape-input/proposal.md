@@ -8,12 +8,14 @@ social-media content, but a job's input today is plain text only
 a post or profile and have the system fetch the post, its comments, the author's
 profile and posting history, then analyze it.
 
-Based on: backend @ 554a94522e789f454271ca08ac72b5db6d24af3d (Go orchestrator, no
-scraper code; `internal/job/job.go`, `internal/httpapi/jobs.go`), frontend @
-3e51ec4cc5fb43c4642a142f927e9a0d99c70231 (health page only; no client of
-`/api/v1/jobs`), project @ 441ecbf96961128099af004da50a063f18b3345c (`full-e2e` is a
-placeholder), shared-specs @ 729fe96720e155868fb944c773470ac4619779f0 (active change
-`llm-finalizer-verdict`, no overlapping requirement, see design.md).
+Based on: backend @ fbf9e6f6763158047ae9c0eceaa65e7aec8cb5b5 (Go orchestrator with
+the merged project#6 LLM finalizer; no scraper code; `internal/job`, `internal/httpapi`,
+`internal/finalizer`), frontend @ 3e51ec4cc5fb43c4642a142f927e9a0d99c70231 (health
+page only; no client of `/api/v1/jobs`), project @
+441ecbf96961128099af004da50a063f18b3345c (`full-e2e` is a placeholder), shared-specs @
+729fe96720e155868fb944c773470ac4619779f0 (active change `llm-finalizer-verdict` of
+project#6, approved to run in parallel; no requirement modified by both changes, see
+design.md decision 7).
 
 ## What Changes
 
