@@ -1,88 +1,95 @@
 {
   "items": [
     {
+      "id": "analysis-chat-api",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 35
+    },
+    {
       "id": "analysis-job-events",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 33
+      "durationMs": 17
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 14
+      "durationMs": 13
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 7
+      "durationMs": 4
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 3
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 2
     },
     {
       "id": "job-text-localization",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 13
     },
     {
       "id": "llm-technique-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 13
+      "durationMs": 12
     },
     {
       "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 12
+      "durationMs": 10
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 10
+      "durationMs": 9
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 7
+      "durationMs": 5
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 4
     },
     {
       "id": "term-context-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 8
     },
     {
       "id": "topic-extraction-result",
@@ -101,8 +108,8 @@
   ],
   "summary": {
     "totals": {
-      "items": 14,
-      "passed": 14,
+      "items": 15,
+      "passed": 15,
       "failed": 0
     },
     "byType": {
@@ -112,15 +119,15 @@
         "failed": 0
       },
       "spec": {
-        "items": 14,
-        "passed": 14,
+        "items": 15,
+        "passed": 15,
         "failed": 0
       }
     }
   },
   "version": "1.0",
   "root": {
-    "path": "/tmp/tmp.O0gW0RvfQ6",
+    "path": "/tmp/tmp.qgmOHAn8gU",
     "source": "nearest"
   }
 }

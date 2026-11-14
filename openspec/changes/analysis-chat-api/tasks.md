@@ -12,4 +12,4 @@
 - [ ] 3.1 `postJobChat` client + tolerant types + error copy for the new codes
 - [ ] 3.2 `/jobs/:id/ask` real chat (context bar, thread, composer, loading, errors with retry, disabled states); Results link
 - [ ] 3.3 nginx chat proxy location with 120 s read timeout
-- [ ] 3.4 i18n en/de/fr/fi/ar, mock list, tests
+- [ ] 3.4 i18n en/de/fr/fi/ar/ru (only `ask.ts` namespace files), mock list, tests

@@ -1,8 +1,8 @@
 # Design: Ask VEIL chat (analysis-chat-api)
 
 ## Context
-Based on backend @ b10abc3560797c99b31df3ace32440e5ce4118a4, frontend @ d2a04eaa1d88589507bf9692a2896bbe108cfdd4,
-project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 1c82dde3ba58cad81b5e0907f0f999d7af01b376.
+Based on backend @ e8c46a1e6e4ab169e6376c5da627d0c71ae0b2ba, frontend @ 4339d356d14fb7a76474428da2756afcd0c184b1,
+project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 5bd40738633bfa21b0e371a364003408af42e773.
 
 Today:
 - `/ask` is a mock (frontend `src/views/AskView.tsx:9`, `secondary-screens` "Ask screen", `docs/mock-areas.md` row
@@ -44,7 +44,10 @@ Today:
 8. **Upstream hidden.** ChatReply and errors never name the agent/model/provider/URL or carry usage/credentials
    (security exception to tolerant reader, stated in the spec, like `analysis-jobs-api` "Registry listing hides
    execution settings").
-9. **Plain-text rendering** mirrors `analysis-jobs-api` "User text rendering" (spec line 212).
+9. **Plain-text rendering** mirrors `analysis-jobs-api` "User text rendering" (`analysis-jobs-api/spec.md:224`).
+10. **Languages follow job-text-localization.** The `language` hint is matched like "Localization languages"
+    (`job-text-localization/spec.md:27-28`), which now includes `ru` (#60, archived on main); the frontend has an `ru`
+    catalog (`src/i18n/locales/ru/`), so the chat UI copy covers en/de/fr/fi/ar/ru.
 
 ## Compatibility classification
 | Change | Where used today | Class |
@@ -52,11 +55,23 @@ Today:
 | New endpoint `POST /api/v1/jobs/{id}/chat` | none (grep `chat` in `openspec/specs`: no match) | shared-additive |
 | New objects ChatRequest, ChatMessage, ChatReply | none | shared-additive |
 | New error codes `job_not_completed`, `rate_limited` (on this endpoint), `chat_unavailable`, `chat_timeout` | new conditions only; `rate_limited` already exists as a scrape error code (`social-scraper-api/spec.md:175`) with the same meaning and `retry_after_s` detail | shared-additive |
-| Job object, Job status, error envelope, common codes (`api-conventions/spec.md:22-38`, `analysis-jobs-api/spec.md:44-64`) | read only, unchanged | none |
+| Job object, Job status, error envelope, common codes (`api-conventions/spec.md:22-38`, `analysis-jobs-api/spec.md:56-75`) | read only, unchanged | none |
 
-No existing endpoint, object, status or error code changes; no client migration needed. The active change
-`wikipedia-passage-coverage` (analysis-jobs-api, analyzer-service-protocol, wikipedia-lookup-result) is not touched;
-its new FinalAssessment member `wikipedia_quotes` simply becomes part of the grounding data once it ships.
+No existing endpoint, object, status or error code changes; no client migration needed.
+
+## Overlapping active work
+- **#49 `term-context`** (active on shared-specs main @ 5bd4073, IMPLEMENTING; capabilities `term-context-result`,
+  `analysis-jobs-api` one additive requirement). This change neither modifies nor depends on it; `base_changes` is
+  empty. Its new `term_context` analyzer result is an ordinary analyzer result, so once it ships it is part of the
+  grounding data by "Assistant identity and grounding" without any change here. `analysis-chat-api` is a new
+  capability that only reads the Job object, so no shared capability is changed by both features.
+- **Frontend `i18n` overlap with #49 `frontend-term-cards`** (approver allowed parallel work). Locale catalogs are
+  split per namespace (`src/i18n/locales/<lang>/<namespace>.ts`). The chat task adds its strings only to the existing
+  `ask` namespace (`src/i18n/locales/{en,de,fr,fi,ar,ru}/ask.ts`), does not touch `results.ts`, `analysis.ts`,
+  `techniques.ts`, `common.ts` or the i18n runtime (`src/i18n/*.ts[x]`), and does not rename or remove any key
+  outside `ask.*`. The only results-view edit is the `href` of the "Ask VEIL" link (`src/views/ResultsView.tsx:101`)
+  and its test assertions, so the two tasks merge without textual or key conflicts. The chat UI does not reference
+  term cards.
 
 ## Component-local decisions (not part of the shared contract)
 - **backend**: upstream client (OpenAI-compatible `POST {base}/chat/completions`, model default `hermes-agent`), env

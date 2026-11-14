@@ -31,5 +31,8 @@ changing the agent container or its configuration; UI layout, persona prompt wor
 deployment networking (component-local requirements, see `design.md`).
 
 ## Based on
-backend @ b10abc3560797c99b31df3ace32440e5ce4118a4, frontend @ d2a04eaa1d88589507bf9692a2896bbe108cfdd4,
-project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 1c82dde3ba58cad81b5e0907f0f999d7af01b376.
+backend @ e8c46a1e6e4ab169e6376c5da627d0c71ae0b2ba, frontend @ 4339d356d14fb7a76474428da2756afcd0c184b1,
+project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 5bd40738633bfa21b0e371a364003408af42e773.
+
+Runs in parallel with #49 `term-context` (active, not modified or depended on; see design.md "Overlapping active
+work" for the frontend i18n file split).

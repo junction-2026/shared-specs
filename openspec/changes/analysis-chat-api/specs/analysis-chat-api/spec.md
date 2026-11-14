@@ -80,7 +80,7 @@ ChatReply and every chat error response MUST NOT contain the upstream agent's na
 - **THEN** the chat response is 503 `chat_unavailable` and its body contains neither the URL nor the key
 
 ### Requirement: Reply language
-When `language` is present the server SHALL match it like job-text-localization "Localization languages" (case-insensitive primary subtag; supported values include `en`, `fr`, `ar`, `de`, `fi`) and SHALL instruct the assistant to answer in that language. When `language` is absent, empty or not supported, the request SHALL NOT fail and the assistant SHALL be instructed to answer in the language of the last user message. The brand name "VEIL" is never translated.
+When `language` is present the server SHALL match it like job-text-localization "Localization languages" (case-insensitive primary subtag; supported values include `en`, `fr`, `ar`, `de`, `fi`, `ru`) and SHALL instruct the assistant to answer in that language. When `language` is absent, empty or not supported, the request SHALL NOT fail and the assistant SHALL be instructed to answer in the language of the last user message. The brand name "VEIL" is never translated.
 
 #### Scenario: Unsupported language
 - **WHEN** a client sends `"language": "es"` with a valid conversation
