@@ -66,7 +66,7 @@ A found WikiLookup SHALL be `aligned` when a sentence of `passage` contains ever
 - **THEN** the WikiLookup has `coverage: "aligned"` and `evidence_sentence: "In 2007, Germany decided to raise the retirement age to 67 by 2029."`
 
 ### Requirement: Conflicting coverage
-A found WikiLookup that is not `aligned` SHALL be `conflicts` when a sentence of `passage` contains a matched named entity and a number X that is not a claim number, where the claim has exactly one claim number of X's kind and that number does not occur in the sentence. The first such sentence is `evidence_sentence`.
+A found WikiLookup that is not `aligned` SHALL be `conflicts` when a sentence of `passage` contains a matched named entity and a standalone number X that is not a claim number, where the claim has exactly one claim number of X's kind and that number does not occur in the sentence (see "Standalone numbers"). The first such sentence is `evidence_sentence`.
 
 #### Scenario: Conflicts on a date
 - **WHEN** the claim text is "Angela Merkel became chancellor in 2006." with `entities: ["Angela Merkel"]` and `passage` is "Angela Merkel is a German politician who was Chancellor of Germany from 2005 to 2021. She led the CDU."
@@ -79,6 +79,13 @@ A found WikiLookup that is not `aligned` SHALL be `conflicts` when a sentence of
 #### Scenario: Two counts are not compared
 - **WHEN** the claim text is "Today the Bundestag voted 412 to 180 to ban cash payments." with `entities: ["Bundestag"]` and `passage` is "The Bundestag is the German federal parliament. It has 630 members."
 - **THEN** the WikiLookup has `coverage: "mentioned"`, because the claim has two counts and so no single count to compare
+
+### Requirement: Standalone numbers
+A digit run of a sentence SHALL be a standalone number unless it is directly preceded or followed by `.`, `,`, `'`, U+00A0 or U+202F that is itself adjacent to another decimal digit; a grouped or decimal number such as `1.500`, `1,500` or `2,5` gives no standalone number.
+
+#### Scenario: Grouped number is not compared
+- **WHEN** the claim text is "Die Stadt hat 1500 Einwohner." with `entities: ["Stadt"]` and `passage` is "Die Stadt hat 1.500 Einwohner."
+- **THEN** the WikiLookup has `coverage: "mentioned"`, because `1500` does not occur and `1` and `500` are not standalone numbers
 
 ### Requirement: Evidence sentence is verbatim
 A non-null `evidence_sentence` SHALL be a non-empty substring of `passage`, character for character, containing every claim number for `aligned` and the differing number X for `conflicts`. When the backend cannot produce such a sentence it SHALL report `mentioned` instead of `aligned` or `conflicts`.
@@ -93,6 +100,13 @@ A consumer, including the finalizer and the orchestrator, SHALL treat a WikiLook
 #### Scenario: Unverifiable evidence downgraded
 - **WHEN** a client reads a WikiLookup with `coverage: "aligned"` whose `evidence_sentence` does not occur in `passage`
 - **THEN** it presents the entry as `mentioned`, not as `aligned`
+
+### Requirement: Coverage is per WikiLookup
+The backend SHALL decide each WikiLookup's `coverage` and `evidence_sentence` from that WikiLookup and its claim only, independent of the claim's other WikiLookups, of any comparison between language editions and of any other ClaimLookup member. `conflicts` states only that one passage gives a number or date other than the claim's; clients SHALL NOT present it as a disagreement between language editions, and a difference between language editions SHALL NOT change any WikiLookup's `coverage`.
+
+#### Scenario: Two editions labelled separately
+- **WHEN** a claim "Das Rentenalter in Deutschland ist 67." with `entities: ["Deutschland", "Rentenalter"]` has a `de` WikiLookup whose `passage` is "In Deutschland liegt das Rentenalter bei 67 Jahren." and an `en` WikiLookup with `status: "no_page"`
+- **THEN** the `de` WikiLookup has `coverage: "aligned"` and the `en` WikiLookup has `coverage: "no_coverage"`, and neither label is affected by the other edition
 
 ### Requirement: Claims about recent events
 The backend SHALL decide the coverage label only from `passage`, `entities` and the claim's `text`, never from another source. A claim about an event Wikipedia does not describe yet thus gets `no_coverage` or at most `mentioned`, which SHALL NOT be read as the event being false; `news_search` remains the analyzer that shows whether outlets report it.
