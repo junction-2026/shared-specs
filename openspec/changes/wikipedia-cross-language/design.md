@@ -3,17 +3,19 @@
 ## Base
 - W2 is archived (`openspec/changes/archive/2026-11-14-wikipedia-claim-lookup`) and canonical in
   `openspec/specs/wikipedia-lookup-result/spec.md`; backend implements it in `internal/adapter/wikipedia.go`
-  (`claimLookup` struct, lines 43-48 @ 402553ad). `persistent-job-history` is now archived; the only active shared
-  change on main @ 07b1fce, `job-text-localization` (#45), touches `job-text-localization` and
-  `technique-classifier-result` only. It already classifies `cross_language` as an enum the frontend localizes and
-  compared-value `text` as verbatim source material (its design.md), consistent with this change. `base_changes` is
-  empty.
-- Parallel plan #46 (`wikipedia-passage-coverage`, plan branch, not on main) adds WikiLookup `coverage`
-  (`no_coverage`/`mentioned`/`aligned`/`conflicts`, passage vs. claim) and MODIFIES "No verdict from Wikipedia
-  lookup". This change MODIFIES only "ClaimLookup object" and adds new requirement names, so the two deltas archive
-  independently in either order. Semantics do not overlap: `cross_language` compares the two passages with each
-  other and never reads or sets `coverage`; a `gap` is never a `conflicts`.
-- Frontend @ 1a14ae9 has no code reading the `wikipedia` AnalyzerRun (grep for `wikipedia` in `frontend/src`: none),
+  (`claimLookup` struct, lines 45-50 @ d03c1cc).
+- #46 `wikipedia-passage-coverage` is archived (`archive/2026-11-14-wikipedia-passage-coverage`): canonical now has
+  WikiLookup `coverage`/`evidence_sentence` (`spec.md:210-325`), a MODIFIED "No verdict from Wikipedia lookup"
+  (`:199`) and FinalAssessment `wikipedia_quotes` (analysis-jobs-api `:545-583`). Backend implements it in
+  `internal/adapter/wikipedia_coverage.go`. This change MODIFIES only "ClaimLookup object" (`:114-119`), whose
+  canonical text did not change in #46, and adds requirements with new names, so archiving it overwrites nothing.
+  "Coverage is per WikiLookup" (`:311`) already says a difference between language editions changes no `coverage`;
+  "Cross-language comparison is deterministic" states the converse (cross_language never reads `coverage`).
+- #45 `job-text-localization` is archived: its canonical "original wording" rule (`job-text-localization/spec.md:101`)
+  keeps Wikipedia passages untranslated, so compared-value `text` stays verbatim too; `cross_language` is an enum
+  the frontend localizes as UI text.
+- No active shared change other than this one exists on main @ 80eea74. `base_changes` is empty.
+- Frontend @ d89fc94 has no code reading the `wikipedia` AnalyzerRun (grep for `wikipedia` in `frontend/src`: none),
   project @ 441ecbf has no E2E for it. So no existing client reads ClaimLookup.
 
 ## Shape
@@ -48,7 +50,7 @@ Example (discrepancy):
 ## Compatibility classification
 | Change | Where used (canonical) | Class |
 |---|---|---|
-| ClaimLookup `cross_language` (new optional member) | ClaimLookup defined at `openspec/specs/wikipedia-lookup-result/spec.md:114-119`, used only in WikipediaLookup `claims` (`:108-112`); no other spec references ClaimLookup | shared-additive |
+| ClaimLookup `cross_language` (new optional member) | ClaimLookup defined at `openspec/specs/wikipedia-lookup-result/spec.md:114-119`, used in WikipediaLookup `claims` (`:107-112`); analysis-jobs-api "Wikipedia quote verification" (`:563-579`) matches only ClaimLookup `claim`; analyzer-service-protocol "Wikipedia labels in finalizer input" passes the result unchanged | shared-additive |
 | ClaimLookup `cross_language_differences` (new optional member) | same | shared-additive |
 | CrossLanguageDifference / ComparedValue objects (new) | new, only in the member above | shared-additive |
 No removed or renamed member, no changed type or meaning, no changed status: no shared-breaking change, no client
@@ -59,3 +61,4 @@ clause, and is left unchanged.
 ## Clients
 - backend: producer.
 - frontend: first reader (new display in this feature). Older frontends ignore the members.
+- finalizer: receives the members in its input (unchanged pass-through); no finalizer or prompt change is planned.

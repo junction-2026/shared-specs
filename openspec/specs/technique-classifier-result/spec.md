@@ -337,11 +337,11 @@ When a Detection's `spans` is empty (no span accepted, or the span step failed o
 - **THEN** every Detection's `plain_language.why` is the no-phrase-located sentence
 
 ### Requirement: Plain-language presentation
-Clients that show a detected technique SHALL show `plain_language.name` and `plain_language.definition` when present, and SHALL show a span's `why` next to (or on activation of) its highlight and `plain_language.why` for a Detection without spans. For a result without `plain_language` (stored before this change), clients SHALL fall back to `display` and `explanation` without error. Clients SHALL NOT key, group or compare techniques by `plain_language.name`.
+Clients that show a detected technique SHALL show `plain_language.name` and `definition` when present, a span's `why` next to (or on activation of) its highlight and `plain_language.why` for a Detection without spans, except as allowed by "Client localization of glossary texts". Without `plain_language`, clients SHALL fall back to their own localization by `name` or to `display` and `explanation`, without error. Clients SHALL NOT key, group or compare techniques by `plain_language.name`.
 
 #### Scenario: Result from before plain-language support
 - **WHEN** a client reads a stored TechniqueClassification whose Detections have no `plain_language` and whose spans have no `why`
-- **THEN** it shows `display` and `explanation` as before and no `why`, without error
+- **THEN** it shows its own localization keyed by `name`, or `display` and `explanation`, and no `why`, without error
 
 ### Requirement: Detection strength members
 Besides the members of the Detection object requirement, a Detection SHALL have at least `margin` (number, derived from the scores in `results`; it is not a score of its own), `located` (boolean) and `strength` (string; values include `strong` and `weak`), as defined by the Detection strength requirement, the same in `analyzer.succeeded` and `GET /api/v1/jobs/{id}`.
@@ -404,3 +404,14 @@ Clients SHALL accept TechniqueClassifications without `summary` and Detections w
 #### Scenario: Result from before strength support
 - **WHEN** a client reads a stored `techniques` result whose Detections have `name`, `display`, `explanation`, `models` and `spans` but no `strength`, and no `summary`
 - **THEN** it lists the detected techniques and their highlights as before, without a strength indicator and without error
+
+### Requirement: Client localization of glossary texts
+When the client's interface language differs from the result's `explanation_language`, a client MAY show its own localization of a technique's name and definition keyed by the stable `name` (or an LLM finding's `label`), and its own `why` template containing the span `text` verbatim (no span text for a Detection without spans). It SHALL use `plain_language` (or the finding's `name` and `definition`) for an identifier it has no localization for, and SHALL NOT alter span `text`.
+
+#### Scenario: Interface language differs from the explanation language
+- **WHEN** `explanation_language` is `fr`, the interface language is `ar` and `Loaded_Language` has the span `"mensonges"`
+- **THEN** the client may show its Arabic name and definition of `Loaded_Language` and an Arabic `why` containing `"mensonges"` verbatim
+
+#### Scenario: Identifier without client localization
+- **WHEN** the interface language differs from `explanation_language` and a Detection has a `name` the client has no localization for
+- **THEN** the client shows `plain_language.name` and `plain_language.definition`

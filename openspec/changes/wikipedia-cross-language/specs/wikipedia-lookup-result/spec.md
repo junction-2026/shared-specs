@@ -101,11 +101,15 @@ Each entry of a CrossLanguageDifference `values` SHALL have at least `kind`, `va
 - **THEN** its entry is `{"kind": "number", "value": "1500", "text": "1.500"}` (at least)
 
 ### Requirement: Cross-language comparison is deterministic
-The backend SHALL compute `cross_language` and `cross_language_differences` only from the `status`, `passage`, `language` and `url` of the claim's WikiLookups, deterministically, without an LLM, a translation service or another network request, and SHALL NOT change, merge or translate any `passage`. The same WikiLookups SHALL give the same members, cached or not.
+The backend SHALL compute `cross_language` and `cross_language_differences` only from the `status`, `passage`, `language` and `url` of the claim's WikiLookups, deterministically, without an LLM, a translation service or another network request, and SHALL NOT change, merge or translate any `passage`. They SHALL NOT read or change any WikiLookup's `coverage` or `evidence_sentence` (see "Coverage is per WikiLookup"). The same WikiLookups SHALL give the same members, cached or not.
 
 #### Scenario: Cached rerun
 - **WHEN** a job is rerun and every WikiLookup is answered from the cache with the same passages
 - **THEN** every ClaimLookup has the same `cross_language` and `cross_language_differences` as in the first run
+
+#### Scenario: Coverage unaffected
+- **WHEN** a claim's `de` WikiLookup has `coverage: "aligned"` and its `en` WikiLookup has `coverage: "mentioned"`, and the two passages give `cross_language: "discrepancy"`
+- **THEN** both WikiLookups keep the `coverage` and `evidence_sentence` they have without the comparison
 
 #### Scenario: Passages untouched
 - **WHEN** `cross_language` is `discrepancy`
@@ -119,8 +123,12 @@ Clients SHALL show each WikiLookup's passage separately and verbatim, SHALL NOT 
 - **THEN** a client quotes the differing values with their language and link and does not present the claim as true or false
 
 ### Requirement: Gap is not a conflict
-A `gap` means only that one language edition had no page for the claim. Clients SHALL NOT present, count or style a `gap` as a discrepancy, disagreement or conflict.
+A `gap` means only that one language edition had no page for the claim. Clients SHALL NOT present, count or style a `gap` as a discrepancy, disagreement or conflict, and SHALL NOT present it like a WikiLookup `coverage: "conflicts"`. A `discrepancy` compares the two passages with each other, not with the claim, and is likewise distinct from `coverage: "conflicts"`: clients SHALL NOT merge the two into one count or label.
 
 #### Scenario: Gap shown neutrally
 - **WHEN** a claim has `cross_language: "gap"`
 - **THEN** a client shows that only one language edition had a page, with no discrepancy or conflict wording, styling or count
+
+#### Scenario: Gap next to a conflicts label
+- **WHEN** a claim has `cross_language: "gap"` and its one found WikiLookup has `coverage: "conflicts"`
+- **THEN** a client shows the `conflicts` label for that WikiLookup only, and the gap neutrally, and counts no conflict for the gap
