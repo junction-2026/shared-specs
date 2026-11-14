@@ -5,8 +5,8 @@
 ### D1. New analyzer instead of a `wikipedia` "term mode"
 The issue suggests extending W1 (`wikipedia`) so a term can be looked up as its own page. `wikipedia-lookup-result`
 was just extended by #46 `wikipedia-passage-coverage` (archived on main @ 80eea74d: per-WikiLookup `coverage` and
-`evidence_sentence`, verified finalizer quotes) and #47 `wikipedia-cross-language` (active on main @ 5981c9fd) changes it again;
-a third delta on the same capability would conflict with #47. The term lookup also has different rules (exact title or redirect only, one
+`evidence_sentence`, verified finalizer quotes) and #47 `wikipedia-cross-language` (archived on main @ 4bc8742) added cross-language comparison;
+the claim lookup is now a two-wiki comparison contract that a single-wiki term lookup does not fit. The term lookup also has different rules (exact title or redirect only, one
 wiki, a lead *sentence*, `no_coverage`) from the claim lookup (title/full-text modes, two wikis, passages). A new
 analyzer `term_context` with its own capability keeps both contracts simple and independent. The backend may reuse
 the `wikipedia` adapter's HTTP client, rate limiting and persistent cache internally (backend local).
@@ -51,20 +51,21 @@ rarely yields terms with comparable quotes, and "Dependency-skipped availability
 
 ## Compatibility classification
 
-Grep of canonical specs (shared-specs @ 5981c9fd; line numbers unchanged since 80eea74d) for every object this change touches:
+Grep of canonical specs (shared-specs @ 1e022157, after #47, #53 and #60 were archived) for every object this change touches:
 
 | Object / place | Evidence | Change | Class |
 |---|---|---|---|
-| New analyzer id `term_context` in AnalyzerRun list | analysis-jobs-api/spec.md:74 (AnalyzerRun object), :66 (Job analyzer list), :181 (List analyzers) | new AnalyzerRun / registry item on deployments that enable it | shared-additive (new endpoint-equivalent object; clients already ignore analyzers they do not know) |
-| Skip/failure reasons and availability | analysis-jobs-api/spec.md:81, :88, :387, :398 | reuses existing reasons and codes only; no new skip reason | none |
+| New analyzer id `term_context` in AnalyzerRun list | analysis-jobs-api/spec.md:85 (AnalyzerRun object), :78 (Job analyzer list), :192 (List analyzers) | new AnalyzerRun / registry item on deployments that enable it | shared-additive (new endpoint-equivalent object; clients already ignore analyzers they do not know) |
+| Skip/failure reasons and availability | analysis-jobs-api/spec.md:361 (AnalyzerRun availability), :389 (Input and selection skips), :398 (Unavailable runs), :409 (Dependency-skipped availability) | reuses existing reasons and codes only; no new skip reason | none |
 | `topic_extraction` Claim `entities` | topic-extraction-result/spec.md:106, :113 | read only | none |
-| `news_search` Article `snippet`, `url`, `title`, `domain` | news-search-result/spec.md:237 | read only; no extra searches | none |
+| `news_search` Article `snippet`, `url`, `title`, `domain` | news-search-result/spec.md:66 | read only; no extra searches | none |
 | `wikipedia` analyzer / WikipediaLookup | wikipedia-lookup-result/spec.md (whole) | not touched | none |
-| LLM reply retry rules | analysis-jobs-api/spec.md:422-468 | referenced, not modified | none |
-| "Wikipedia quotes for clients" | analysis-jobs-api/spec.md:578-583 | MODIFIED: also allows `term_context` EncyclopediaQuote as a Wikipedia quotation; the final assessment rule and absent-member rule are unchanged | shared-additive (relaxes a client rule for a new object; existing clients stay conformant) |
-| FinalAssessment `wikipedia_quotes`, WikipediaQuote | analysis-jobs-api/spec.md:131, :545-576; analyzer-service-protocol/spec.md:108 | not touched; `term_context` results are not finalizer quote sources | none |
+| LLM reply retry rules | analysis-jobs-api/spec.md:434-480 | referenced, not modified | none |
+| "Wikipedia quotes for clients" | analysis-jobs-api/spec.md:594-599 | MODIFIED: also allows `term_context` EncyclopediaQuote as a Wikipedia quotation; the final assessment rule and absent-member rule are unchanged | shared-additive (relaxes a client rule for a new object; existing clients stay conformant) |
+| Job `public`, List jobs, Job visibility (#53, archived) | analysis-jobs-api/spec.md:16, :57, :172, :601-636 | not touched; `term_context` is an AnalyzerRun of any job, public or not | none |
+| FinalAssessment `wikipedia_quotes`, WikipediaQuote | analysis-jobs-api/spec.md:143, :561-592; analyzer-service-protocol/spec.md:72 | not touched; `term_context` results are not finalizer quote sources | none |
 | WikiLookup `coverage` / `no_coverage` | wikipedia-lookup-result/spec.md (from #46) | not touched; TermContext `"no_coverage"` is a separate value of a separate object | none |
-| job-text-localization (canonical, #45 archived) | job-text-localization/spec.md:72-73 "Localization does not re-run analysis", :100-101 "Original evidence stays verbatim" | TermContext strings are original evidence and are never translated; no new LocalizedText | none |
+| job-text-localization (canonical; #45, #60 archived) | job-text-localization/spec.md:84 "Localization does not re-run analysis", :112 "Original evidence stays verbatim" | TermContext strings are original evidence and are never translated; no new LocalizedText | none |
 
 No shared-breaking change: no member removed, renamed or retyped, no status of an existing case changed. No
 client migration is needed; clients that do not know `term_context` show it at most as a generic analyzer row.
