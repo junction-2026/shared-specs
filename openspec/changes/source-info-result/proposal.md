@@ -55,6 +55,32 @@ already treat unknown skip reasons as "not run".
   test CSV and the real data file.
 - **One backend task**.
 
+## Overlapping feature (junction-2026/project#16)
+
+#16 ("Technique analyzer: score all 18 labels", shared change
+`technique-classifier-result` on `plan/16-technique-analyzer-score-all-18` @
+94884abee2ed6fb7673d0c9830a9dbebaf64e962) runs in parallel and also changes backend
+`analyzer-adapters` and `analyzer-registry`.
+
+- **Shared specs: no overlap.** #16 only touches `technique-classifier-result`; this
+  change only adds `source-info-result`. Neither modifies `analysis-jobs-api` or another
+  canonical capability, so the two changes merge independently in either order.
+- **Backend: disjoint files, additive local deltas.** This plan's backend task puts its
+  code in new files (`internal/outlets/`, `internal/adapter/source_info*.go`,
+  `internal/registry/source_info*.go`) and touches shared files only with one-line
+  additions: the adapter constant and `Execute` switch case
+  (`internal/adapter/adapter.go:35-50`), the call to its validation from the registry
+  normalizer, the new `outlets_file` field on `Execution`, the `Executor` constructor
+  wiring, one `Dockerfile` `COPY` line and a README section. Its local OpenSpec change
+  uses only `## ADDED Requirements` with `Source info ...` / `Outlet table ...` names and
+  does not MODIFY or REMOVE any existing requirement of `analyzer-adapters` or
+  `analyzer-registry` (in particular none of the `Technique classifier ...` ones #16
+  rewrites). It does not touch `internal/adapter/technique*.go`,
+  `internal/registry/technique*.go` or `docs/examples/technique_classifier.yaml`.
+- Whichever backend PR merges second rebases; the expected conflicts are adjacent lines
+  in the switch / constant blocks and the README, resolved by keeping both.
+- No dependency between the two backend tasks: neither imports or calls the other's code.
+
 ## Impact
 
 - backend: outlet table loader, `source_info` adapter, registry keys and validation,
