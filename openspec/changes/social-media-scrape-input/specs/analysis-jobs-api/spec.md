@@ -26,7 +26,7 @@ The Job object SHALL have at least: `id`; `status`; `done` (boolean); `created_a
 - **THEN** the job has `scrape: null`
 
 ### Requirement: Job status
-Job `status` values SHALL include `queued` (no analyzer and no scrape started), `scraping` (the job's scrape is running), `running`, `finalizing` (all AnalyzerRuns settled, finalization not yet ended), `completed` (all settled and finalization ended as `completed`, `failed` or `skipped`), `cancelled` and `failed` (orchestrator-internal error, or failed scrape). `done` SHALL be `true` if and only if status is `completed`, `cancelled` or `failed`. Analyzer or finalization failures SHALL NOT make the job `failed`.
+Job `status` values SHALL include `queued` (nothing started), `scraping` (scrape running), `running`, `finalizing` (all AnalyzerRuns settled, finalization not yet ended), `completed` (all settled and finalization ended as `completed`, `failed` or `skipped`), `cancelled` and `failed` (orchestrator-internal error, or failed scrape). `done` SHALL be `true` if and only if status is `completed`, `cancelled` or `failed`. Analyzer or finalization failures SHALL NOT make the job `failed`.
 
 #### Scenario: Analyzer failure does not fail the job
 - **WHEN** one analyzer fails, the others succeed and finalization completes
