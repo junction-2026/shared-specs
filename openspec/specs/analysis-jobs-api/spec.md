@@ -196,7 +196,7 @@ Analyzer listing items MUST NOT contain endpoint URLs, headers, environment valu
 - **THEN** no member of the analyzers response contains any of these values
 
 ### Requirement: Verdict values
-`verdict` SHALL be one of `detected` (the analyzers give clear evidence of propaganda or manipulation in the content), `not_detected` (they clearly indicate none) or `uncertain` (evidence is weak, mixed, contradictory or missing). Clients SHALL treat an unknown `verdict` value like `uncertain`. JobSummary `finalization.verdict` takes the same values.
+`verdict` SHALL be one of `detected` (at least one strong signal of propaganda or manipulation that the content supports), `not_detected` (no strong signal was found; weak hints may exist, see Weak hints and verdict) or `uncertain` (strong signals disagree, a decisive analyzer that applies to the text is unavailable, or there is no analyzer evidence). Clients SHALL treat an unknown `verdict` value like `uncertain`. JobSummary `finalization.verdict` takes the same values.
 
 #### Scenario: Unknown verdict in a client
 - **WHEN** a client receives a FinalAssessment with a `verdict` value it does not know
@@ -480,3 +480,10 @@ For a scraped input with `url_kind: page`, `source.url` SHALL be the ScrapeResul
 #### Scenario: Outlet of a news page
 - **WHEN** a job scrapes a `dw.com` article and the deployment's outlet table lists `dw.com` as Deutsche Welle
 - **THEN** `source_info.page_outlet` is the Deutsche Welle outlet (source-info-result)
+
+### Requirement: Weak hints and verdict
+Weak hints alone, such as `weak` technique Detections or low-confidence findings, SHALL NOT make a verdict `uncertain`; without a strong signal the verdict is `not_detected` and the hints only lower `confidence`.
+
+#### Scenario: Only weak hints
+- **WHEN** the only signals of a job are `weak` technique Detections and a propaganda classifier result of no propaganda
+- **THEN** a conforming finalizer answers `not_detected`, possibly with lower `confidence`, not `uncertain`
