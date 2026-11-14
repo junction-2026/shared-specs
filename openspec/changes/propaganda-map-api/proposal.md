@@ -1,8 +1,8 @@
 # Propaganda map: countries linked to detected propaganda across analyses (junction-2026/project#59)
 
 Based on backend @ e8c46a1e6e4ab169e6376c5da627d0c71ae0b2ba, frontend @ 4339d356d14fb7a76474428da2756afcd0c184b1,
-project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 5bd40738633bfa21b0e371a364003408af42e773
-(main with `term-context` #49 active and `job-visibility` #53, `wikipedia-cross-language` #47 and
+project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 5f4e9e4789a043c2ee8620f54fc3da58cea1cb86
+(main with `term-context` #49 and `analysis-chat-api` #57 active, and `job-visibility` #53, `wikipedia-cross-language` #47 and
 `russian-localization-language` #60 archived).
 
 ## Why
@@ -42,7 +42,7 @@ each country has, with a per-country list of those analyses.
   `fi`, `ru`) in different namespaces (#49 results/term cards, #59 `explore`), so they do not collide.
   `job-visibility` (#53), `wikipedia-cross-language` (#47) and `russian-localization-language` (#60) are archived on
   main; this change reads the canonical `public` member (non-public jobs never appear on the map).
-- `analysis-chat-api` (#57, proposed, parallel) adds only `POST /api/v1/jobs/{id}/chat`: disjoint from
+- `analysis-chat-api` (#57, active on main @ 5f4e9e4, IMPLEMENTING, parallel) adds only `POST /api/v1/jobs/{id}/chat`: disjoint from
   `/api/v1/map/*`, no shared contradiction. Local overlap on backend `orchestrator-http-server` and frontend
   `backend-api-client` is append-only in separate files/requirements; frontend `secondary-screens` is not modified by
   this feature (see design.md "Overlap with analysis-chat-api").

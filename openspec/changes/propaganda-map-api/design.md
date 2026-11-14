@@ -1,8 +1,8 @@
 # Design: propaganda-map-api (junction-2026/project#59)
 
 Based on backend @ e8c46a1e6e4ab169e6376c5da627d0c71ae0b2ba, frontend @ 4339d356d14fb7a76474428da2756afcd0c184b1,
-project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 5bd40738633bfa21b0e371a364003408af42e773
-(main with `term-context` #49 active and `job-visibility` #53, `wikipedia-cross-language` #47 and
+project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 5f4e9e4789a043c2ee8620f54fc3da58cea1cb86
+(main with `term-context` #49 and `analysis-chat-api` #57 active, and `job-visibility` #53, `wikipedia-cross-language` #47 and
 `russian-localization-language` #60 archived).
 
 ## Decisions
@@ -42,8 +42,8 @@ than ignored, so the map is useful immediately after deploy.
 
 ## Compatibility classification (common rule 13 / step 2)
 
-Every object and endpoint this change touches or reuses, grepped in canonical specs on main @ 5bd4073 (analysis-jobs-api, source-info-result,
-technique-classifier-result and api-conventions are byte-identical to e646135, so the line numbers hold):
+Every object and endpoint this change touches or reuses, grepped in canonical specs on main @ 5f4e9e4 (`openspec/specs/` is byte-identical to 5bd4073 and e646135 for
+analysis-jobs-api, source-info-result, technique-classifier-result and api-conventions, so the line numbers hold):
 
 | Item | Where used today | Change | Class |
 |---|---|---|---|
@@ -68,8 +68,8 @@ reads only `source_info` and `input.source.url`). The new `term_context` run in 
 job's `done` state semantics, so the "Map values fixed when done" derivation is unaffected. No contradiction in
 either archive order.
 
-## Overlap with analysis-chat-api (#57, proposed, parallel)
-`analysis-chat-api` (plan branch `plan/57-ask-veil-chat-about-a-finished-a` @ 5ce501b) adds only
+## Overlap with analysis-chat-api (#57, active, IMPLEMENTING)
+`analysis-chat-api` (active change on shared-specs main @ 5f4e9e4, `openspec/changes/analysis-chat-api/`) adds only
 `POST /api/v1/jobs/{id}/chat`; this change adds only `GET /api/v1/map/*`. The paths, objects and error conditions are
 disjoint, neither modifies a canonical requirement, and chat never changes a job (so it never changes map values).
 No shared contradiction in either merge or archive order; nothing here builds on it, so `base_changes` stays empty.
