@@ -1,7 +1,7 @@
 ## 1. Shared contract
 
 - [ ] 1.1 Review and approve the delta specs for `social-scraper-api` and `analysis-jobs-api`
-- [ ] 1.2 Publish the change on shared-specs `main` (no archive until the feature integrates; archive after `remove-closed-platform-scraping`)
+- [ ] 1.2 Publish the change on shared-specs `main` (no archive until the feature integrates)
 
 ## 2. Backend (child `backend-web-page-scraping`)
 
