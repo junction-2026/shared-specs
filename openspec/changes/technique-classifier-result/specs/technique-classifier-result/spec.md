@@ -1,5 +1,5 @@
 ## Purpose
-Result object of the propaganda technique classifier analyzer: per-technique scores for the 18 SemEval-2020 Task 11 techniques on a job's English text, the detected techniques and the sentences that carry them, as clients read it from the analysis job API and event stream.
+Result object of the propaganda technique analyzer: for the English translation of a job's text, every technique label with its score from the NCI document model, the NCI short-post model or both, with each model's cutoff, as clients read it from the analysis job API and event stream.
 
 ## ADDED Requirements
 
@@ -8,90 +8,115 @@ A deployment that offers technique classification SHALL register it as a regular
 
 #### Scenario: Translation failed
 - **WHEN** `translation` is `failed`
-- **THEN** `techniques` is `skipped` with reason `dependency_failed`, `result: null`, and no classifier request is sent
+- **THEN** `techniques` is `skipped` with reason `dependency_failed`, `result: null`, and no model request is sent
 
 #### Scenario: Deployment without the analyzer
 - **WHEN** the registry has no `techniques` analyzer
 - **THEN** jobs have no AnalyzerRun with that id and clients show no technique analysis, without error
 
-### Requirement: Technique names
-Technique `name` values SHALL be these 18 strings: `Loaded_Language`, `Appeal_to_fear-prejudice`, `Exaggeration,Minimisation`, `Repetition`, `Flag-Waving`, `Name_Calling,Labeling`, `Reductio_ad_hitlerum`, `Black-and-White_Fallacy`, `Causal_Oversimplification`, `Whataboutism,Straw_Men,Red_Herring`, `Straw_Man`, `Red_Herring`, `Doubt`, `Appeal_to_Authority`, `Thought-terminating_Cliches`, `Bandwagon`, `Slogans`, `Obfuscation,Intentional_Vagueness,Confusion`.
+### Requirement: English translation only
+The `techniques` analyzer SHALL classify only the `translated_text` of the `translation` result and SHALL NOT send the job's original-language text to either model.
 
-#### Scenario: Names are stable identifiers
-- **WHEN** a client groups detections by technique
-- **THEN** it uses `name` as the key and `display` only as the label
+#### Scenario: Non-English job
+- **WHEN** a job's content is German and `translation` succeeds with an English `translated_text`
+- **THEN** each model request carries only the English `translated_text` and none carries the German content
 
-### Requirement: TechniqueClassification object
-When `techniques` has `succeeded`, its `result` SHALL be a TechniqueClassification with at least: `model` (`short` or `long`), `words` (integer), `threshold` (number), `thresholds`, `techniques`, `detected`, `max_score` (number 0 to 1), `sentences`, `offsets_in`, `sentences_truncated` (boolean) and `latency_ms` (number or null). It SHALL be the same in `analyzer.succeeded` and `GET /api/v1/jobs/{id}`. Clients SHALL ignore unknown members.
+### Requirement: Technique labels
+The known technique labels SHALL be these 18 strings: `Loaded_Language`, `Appeal_to_fear-prejudice`, `Exaggeration,Minimisation`, `Repetition`, `Flag-Waving`, `Name_Calling,Labeling`, `Reductio_ad_hitlerum`, `Black-and-White_Fallacy`, `Causal_Oversimplification`, `Whataboutism,Straw_Men,Red_Herring`, `Straw_Man`, `Red_Herring`, `Doubt`, `Appeal_to_Authority`, `Thought-terminating_Cliches`, `Bandwagon`, `Slogans`, `Obfuscation,Intentional_Vagueness,Confusion`.
 
-#### Scenario: Short text
-- **WHEN** a job's English translation has 40 words and the deployment's short limit is 80 words
-- **THEN** `result.model` is `short`, `result.words` is 40 and `result.threshold` is the short model's configured threshold
+#### Scenario: Known labels
+- **WHEN** a ModelResult is produced
+- **THEN** each of these 18 strings appears as a `label` with `known: true`
 
-### Requirement: Model and words
-`words` SHALL be the number of whitespace-separated words of the classified English text. `model` SHALL be `short` when `words` is at most the deployment's short limit and `long` otherwise, independent of `input.source`. `threshold` SHALL be the chosen model's default threshold. Clients SHALL NOT compare scores across results with different `model`.
+### Requirement: Label handling by clients
+Clients SHALL use `label` as the stable key of a technique and SHALL accept and show labels outside the known list.
+
+#### Scenario: Labels are stable identifiers
+- **WHEN** a client groups scores by technique
+- **THEN** it uses `label` as the key
+
+### Requirement: TechniqueAnalysis object
+When `techniques` has `succeeded`, its `result` SHALL be a TechniqueAnalysis with at least: `words` (integer, whitespace-separated words of the classified text), `results` (non-empty array of ModelResult, at most one per model, `nci-technique` before `nci-social`) and `latency_ms` (number or null). It SHALL be the same in `analyzer.succeeded` and `GET /api/v1/jobs/{id}`. Clients SHALL ignore unknown members.
+
+#### Scenario: Both models ran
+- **WHEN** both models classified the text
+- **THEN** `results` has two entries, the first with `model: "nci-technique"` and the second with `model: "nci-social"`
+
+### Requirement: Model selection
+`nci-social` (short-post model, at most 128 model tokens) SHALL run when the text fits the deployment's short-post bound, and `nci-technique` (document model) SHALL run when the text exceeds that bound or reaches the deployment's document minimum; every succeeded result SHALL contain at least one ModelResult. Selection SHALL depend only on the classified text, not on `input.source`.
+
+#### Scenario: Short post
+- **WHEN** the translated text has 20 words and the deployment's document minimum is 40 words
+- **THEN** `results` has one ModelResult with `model: "nci-social"`
+
+#### Scenario: Long document
+- **WHEN** the translated text has 500 words
+- **THEN** `results` has one ModelResult with `model: "nci-technique"`
 
 #### Scenario: Platform does not matter
 - **WHEN** two jobs have the same text, one with `source.platform: "x"` and one without `source`
-- **THEN** both results have the same `model`, `techniques` and `detected`
+- **THEN** both results have the same `results[].model` values and scores
 
-### Requirement: Scores and thresholds
-`techniques` SHALL contain one TechniqueScore per technique name (18 entries), sorted by `score` descending. `thresholds` SHALL be an object mapping each of the 18 names to its effective threshold (the per-technique override or else `threshold`). `max_score` SHALL be the highest `score` in `techniques`. A TechniqueScore SHALL have at least `name`, `display` (non-empty string) and `score` (independent probability, 0 to 1).
+### Requirement: Separate model results
+When both models run, both ModelResults SHALL be kept separately. The analyzer SHALL NOT average, merge or combine their scores, and clients SHALL NOT compare or combine scores across models.
 
-#### Scenario: Scores are not a distribution
-- **WHEN** a client reads `techniques`
-- **THEN** it does not expect the scores to sum to 1
+#### Scenario: No averaging
+- **WHEN** both models ran and `Doubt` scored 0.6 from `nci-technique` and 0.2 from `nci-social`
+- **THEN** the `nci-technique` ModelResult has `Doubt` with `score: 0.6`, the `nci-social` ModelResult has `Doubt` with `score: 0.2`, and no other `Doubt` score appears
 
-### Requirement: Detected techniques
-`detected` SHALL list a Detection for each technique whose document score is at or above its `thresholds` value, sorted by `score` descending, and SHALL be empty when none is. A Detection SHALL have at least `name`, `display`, `explanation` (non-empty one-line string) and `score`.
+### Requirement: ModelResult object
+A ModelResult SHALL have at least `model` (values include `nci-technique` and `nci-social`), `cutoff` (number 0 to 1, the cutoff the deployment configured for that model when the job ran) and `scores` (array of TechniqueScore). `scores` SHALL contain exactly one TechniqueScore for each of the 18 known labels, in the order of the Technique labels requirement, followed by one TechniqueScore for each other label the model returned, in the model's order. Scores below the cutoff SHALL be present.
 
-#### Scenario: Same scores, different model
-- **WHEN** `Loaded_Language` scores 0.4 and every other technique below 0.3, with short threshold 0.3 and long threshold 0.5
-- **THEN** a `short` result's `detected` lists only `Loaded_Language` and a `long` result's `detected` is empty
+#### Scenario: Below-cutoff scores kept
+- **WHEN** every label scores below the cutoff
+- **THEN** `scores` still has 18 entries for the known labels, each with `above_cutoff: false`
 
-#### Scenario: Per-technique override
-- **WHEN** the long model's threshold is 0.5, `Doubt` has an override of 0.7 and `Doubt` scores 0.6
-- **THEN** `thresholds.Doubt` is 0.7 and `Doubt` is not in `detected`
+### Requirement: TechniqueScore object
+A TechniqueScore SHALL have at least `label` (string), `score` (number 0 to 1, the model's confidence in that technique on the English text; scores are independent and need not sum to 1), `model` and `cutoff` (equal to its ModelResult's), `above_cutoff` (boolean, `true` exactly when `score >= cutoff`) and `known` (boolean, `true` for the 18 known labels).
 
-### Requirement: Sentence detections
-`sentences` SHALL list a SentenceDetection for each scored sentence with at least one technique at or above its `thresholds` value, ordered by `start`. A SentenceDetection SHALL have at least `text` (the sentence), `start` and `end` (integers) and `techniques` (array of Detection for that sentence's scores, sorted by `score` descending, non-empty). `sentences_truncated` SHALL be `true` when sentences beyond the deployment's limit were not scored.
+#### Scenario: Equality counts
+- **WHEN** the `nci-social` cutoff is 0.3 and `Loaded_Language` scores 0.3
+- **THEN** its TechniqueScore has `above_cutoff: true`
 
-#### Scenario: No sentence over threshold
-- **WHEN** no scored sentence reaches a threshold
-- **THEN** `sentences` is an empty array
+#### Scenario: Same score, different cutoffs
+- **WHEN** `Loaded_Language` scores 0.4 from both models with cutoffs 0.5 (`nci-technique`) and 0.3 (`nci-social`)
+- **THEN** it has `above_cutoff: false` in the `nci-technique` ModelResult and `above_cutoff: true` in the `nci-social` ModelResult
 
-### Requirement: Sentence offsets
-`start` and `end` SHALL be half-open UTF-16 code-unit offsets such that `S.slice(start, end)` equals `text`, where `S` is `Job.input.content` when `offsets_in` is `original` and the `translated_text` of the `translation` AnalyzerRun result when it is `translation`. `offsets_in` SHALL be `original` only when `source_language` is `en` and every reported sentence was found in `Job.input.content`.
+#### Scenario: Unfamiliar label
+- **WHEN** a model returns the 18 known labels plus `Appeal_to_Pity` with score 0.7
+- **THEN** the run succeeds and its ModelResult has 19 scores, the last with `label: "Appeal_to_Pity"`, `known: false`, `score: 0.7` and `above_cutoff` computed against the model's cutoff
 
-#### Scenario: English job
-- **WHEN** an English job with content `"Wake up. They are LYING to you."` gets a detection in the second sentence
-- **THEN** `offsets_in` is `original` and the sentence has `start: 9`, `end: 31` and `text: "They are LYING to you."`
+### Requirement: Default cutoffs
+Unless the deployment configures other values, `cutoff` SHALL be 0.5 for `nci-technique` and 0.3 for `nci-social`. A changed configuration SHALL be visible in `cutoff` of every result produced after the change.
 
-#### Scenario: German job
-- **WHEN** `translation` reports `source_language: "de"`
-- **THEN** `offsets_in` is `translation` and every `sentences[]` slice of `translated_text` equals its `text`
+#### Scenario: Configured cutoff
+- **WHEN** the deployment sets the `nci-technique` cutoff to 0.6
+- **THEN** new `nci-technique` ModelResults have `cutoff: 0.6` and `above_cutoff` is evaluated against 0.6
 
 ### Requirement: Technique classifier failures
-`techniques` SHALL be `failed` with `result: null` and `error.code` `invalid_output` when the classifier response has a missing or unknown label, not all 18 labels, a score outside 0 to 1, or a different number of result lists than texts sent; `adapter_error` for a non-2xx answer, a connection error or an unreadable translation result; `timeout` when its timeout elapses; `cancelled` on job cancellation. It SHALL NOT fail the job or other analyzers.
+`techniques` SHALL be `failed` with `result: null` and `error.code` `invalid_output` when a model response misses one of the 18 known labels, repeats a label, has a non-string label or a score outside 0 to 1; `adapter_error` for a non-2xx answer, a connection error or a missing or unreadable `translated_text`; `timeout` when its timeout elapses; `cancelled` on job cancellation. It SHALL NOT fail the job or other analyzers, and `propaganda_detection` SHALL be unaffected.
 
 #### Scenario: Unnamed labels
-- **WHEN** the classifier answers with labels `LABEL_0` to `LABEL_17`
+- **WHEN** a model answers with labels `LABEL_0` to `LABEL_17`
 - **THEN** `techniques` is `failed` with `error.code: invalid_output` and the job ends `completed`
 
-#### Scenario: No fallback model
-- **WHEN** the chosen model's service answers HTTP 503
-- **THEN** `techniques` is `failed` with `error.code: adapter_error` and the other model's service received no request
+### Requirement: No partial technique result
+When two models are needed and either fails, `techniques` SHALL be `failed` with that model's error and `result: null`; a succeeded result SHALL contain every model the routing selected.
+
+#### Scenario: One of two models fails
+- **WHEN** both models are needed and the `nci-social` service answers HTTP 503
+- **THEN** `techniques` is `failed` with `error.code: adapter_error` and `result: null`
 
 ### Requirement: Technique classifier errors hide credentials
-`error.message` of a failed `techniques` run and every member of its result MUST NOT contain credentials: no configured header value (such as `Authorization`) and no token, even when the classifier echoes them.
+`error.message` of a failed `techniques` run and every member of its result MUST NOT contain credentials: no configured header value (such as `Authorization`) and no token, even when a model service echoes them.
 
 #### Scenario: Service echoes the token
-- **WHEN** the classifier answers HTTP 401 with a body that repeats the bearer token
+- **WHEN** a model service answers HTTP 401 with a body that repeats the bearer token
 - **THEN** `error.message` does not contain the token
 
 ### Requirement: Technique result presentation
-Sentence `text` comes from untrusted content; clients SHALL render it, `display` and `explanation` as plain text without HTML or Markdown interpretation. Clients SHALL present detections as indicators of a technique, not as proof of propaganda, and SHALL NOT present `score` as a calibrated probability across models.
+Clients SHALL render `label` as plain text without HTML or Markdown interpretation. Clients SHALL present `above_cutoff` labels as indicators of a technique on the English translation, not as proof of propaganda; SHALL treat several labels being above cutoff at once as normal; SHALL NOT present a below-cutoff score as a detected technique; and SHALL NOT present `score` as a calibrated probability or compare it across models.
 
-#### Scenario: Markup in a sentence
-- **WHEN** a SentenceDetection `text` contains `<b>LIES</b>`
-- **THEN** a client shows those characters literally
+#### Scenario: Several techniques at once
+- **WHEN** `Loaded_Language` and `Flag-Waving` are both `above_cutoff` in one ModelResult
+- **THEN** a client shows both as indicated techniques

@@ -2,92 +2,84 @@
 
 ## Why
 
-Parent feature junction-2026/project#15. The backend gets a `technique_classifier`
-adapter that scores the English translation of a job's text for the 18 SemEval-2020
-Task 11 propaganda techniques, with a short-text model (BERTweet, threshold 0.3) or a
-long-text model (ModernBERT, threshold 0.5) chosen by word count, and also scores each
-sentence so clients can highlight the wording that carries a technique. The result
-reaches clients verbatim through `Job.analyzers[].result` and `analyzer.succeeded`
-(`analysis-jobs-api/spec.md:74`), and the frontend highlight view is the expected
-follow-up, so the result shape (model, scores, detections, sentence offsets and what
-they index) is an interface between repositories. That interface is this change.
+Parent feature junction-2026/project#15 planned a `techniques` analyzer (short/long
+model by word count, `thresholds` map, `detected` list, per-sentence detections with
+offsets). Parent feature junction-2026/project#16 amends that plan before any backend
+code exists: the analyzer scores the English translation with the two NCI models
+(`nci-technique` for documents, `nci-social` for short posts up to 128 model tokens),
+returns **every** technique label with its score, the model, that model's cutoff and
+an `above_cutoff` flag, keeps both result sets when both models run (no averaging),
+and passes unfamiliar labels through. Where #16 conflicts with #15's draft, #16 wins.
+The result reaches clients verbatim through `Job.analyzers[].result` and
+`analyzer.succeeded` (`analysis-jobs-api/spec.md:74`), so its shape is an interface
+between repositories. This change (still active, never archived) is rewritten in place.
 
-Based on: backend @ c9d39e4ae1902f33669bdb0f5112361b35625308 (`propaganda_detection`
-adapter `internal/adapter/propaganda.go`, `mistral_translation` returning
-`source_language` and `translated_text` from `normalized_content`,
-`internal/adapter/translation.go:19-24,142`; bindings `internal/adapter/adapter.go:74-101`),
-frontend @ 3e51ec4cc5fb43c4642a142f927e9a0d99c70231 (health page only, no job client),
+Based on: backend @ 69f5c6d4f6b13bbb0e6027f0d2dfae5c02aff28e (`propaganda_detection`
+adapter `internal/adapter/propaganda.go` incl. the `$analyzers.<id>` → `translated_text`
+binding, `mistral_translation` result `translated_text`/`source_language`
+`internal/adapter/translation.go:122-142`; no `techniques` code yet),
+frontend @ 3e51ec4cc5fb43c4642a142f927e9a0d99c70231 (no job/analyzer client),
 project @ 441ecbf96961128099af004da50a063f18b3345c (`full-e2e` only),
-shared-specs @ 6b5186fe71808717b0184f1ec28a4b3586a8d4d6 (active change
-`merge-scraper-drop-facebook` of junction-2026/project#14 modifies `analysis-jobs-api`
-and `social-scraper-api` only, disjoint from this change; see "Overlapping feature").
+shared-specs @ 2dd0006dab4aa4c6cbfff866d86031b0376e9603 (active change
+`technique-classifier-result` from #15).
 
 ## What Changes
 
-- **technique-classifier-result** (new capability): analyzer id `techniques`; the
-  TechniqueClassification result object (`model`, `words`, `threshold`, `thresholds`,
-  `techniques`, `detected`, `max_score`, `sentences`, `offsets_in`,
-  `sentences_truncated`, `latency_ms`); the 18 technique names; TechniqueScore,
-  Detection and SentenceDetection objects; offset unit (UTF-16 code units) and the
-  string the offsets index; failure codes; credential-free errors; plain-text
-  rendering and "indicator, not proof" presentation rules for clients.
+- **technique-classifier-result** (new capability, amended before archive):
+  - Analyzer id `techniques` (unchanged), category `propaganda`, `depends_on` `translation`;
+    only the translation's `translated_text` is classified.
+  - Result object TechniqueAnalysis: `words`, `results` (one ModelResult per model
+    run: `model`, `cutoff`, `scores`), `latency_ms`.
+  - TechniqueScore: `label`, `score`, `model`, `cutoff`, `above_cutoff`, `known`.
+  - All 18 known labels present per ModelResult; unfamiliar labels kept (`known: false`).
+  - Model values `nci-technique` / `nci-social`; which runs is decided by the text's
+    length (rule below); both kept separately when both run.
+  - Failure codes (existing canonical codes), credential-free errors, presentation rules.
+- **Removed from #15's draft**: `model: short|long`, `threshold`, `thresholds`,
+  `techniques` (TechniqueScore with `name`/`display`), `detected`, `max_score`,
+  `sentences`, `offsets_in`, `sentences_truncated`, Detection/SentenceDetection objects,
+  "unknown label is invalid_output".
 
 Not changed: `analysis-jobs-api`, `analysis-job-events`, `analyzer-service-protocol`,
-`api-conventions`. No new skip reason or error code: the analyzer uses the canonical
-`dependency_failed`, `adapter_error`, `timeout`, `invalid_output`, `cancelled`
-(`analysis-jobs-api/spec.md:81,88`).
+`api-conventions`. `propaganda_detection` is untouched.
 
 ## Decisions for approval
 
-- **Result shape is shared; everything that produces it is backend-local**: the ML
-  service request/response, model routing threshold (`short_max_words`), sentence
-  splitter, `max_sentences`, per-model endpoints/thresholds, registry config, display
-  name texts and the LLM description. The ML service is a third-party deployment, not
-  a registered repository, so its contract is a backend local requirement.
-- **Offsets are UTF-16 code units** so a browser can `slice` them directly; a Go
-  implementation converts. Every reported sentence carries its `text`, so a client can
-  verify the slice.
-- **`offsets_in: "original"` only when every reported sentence is found verbatim** in
-  `Job.input.content`. The adapter always classifies `translated_text` (for English,
-  the translator returns the text unchanged, but an LLM may still alter whitespace or
-  characters, and `normalized_content` differs from `content` for HTML and CRLF).
-  When `source_language` is `en` and every reported sentence is located, in order, in
-  `Job.input.content`, offsets index the original; otherwise they index the
-  translation's `translated_text` and `offsets_in` is `"translation"`. This keeps
-  `content.slice(start, end) === text` true in every case.
-- **Fixed analyzer id `techniques`** (as in the issue's registry entry), category
-  `propaganda`; clients treat a missing, skipped or failed run as "no technique
-  analysis", never as "no techniques".
-- **`thresholds` member added** (effective threshold for each of the 18 techniques
-  after per-technique overrides), so clients and the LLM can tell why a score is or is
-  not detected. Additive to the issue's shape.
-- **No frontend task** (issue non-goal). **No project task**: no integration suite
-  exercises analyzers against ML services; backend tests use stub services.
-- **One backend task** (adapter, registry validation, display map, example, README,
-  tests: about 8 files in one area).
+- **Routing rule (issue asks the planner to fix it).** The backend has no BERTweet
+  tokenizer, so the 128-token limit is checked with a conservative word bound:
+  `nci-social` runs when `words <= social_max_words` (default **80**: 80 words × ~1.5
+  tokens/word + 2 special tokens ≤ 128); `nci-technique` runs when
+  `words > social_max_words` **or** `words >= technique_min_words` (default **40**,
+  "long enough to be a document"). So: < 40 words → social only; 40–80 → both;
+  > 80 → technique only. Both bounds are backend registry config; the result echoes
+  `words` and each model's `cutoff` so clients can see what happened.
+- **Grouped result**: `results[]` holds one ModelResult per model run, in the order
+  `nci-technique`, `nci-social`; every TechniqueScore also carries `model` and `cutoff`
+  (as the issue requires) so a flattened list stays self-describing.
+- **Score order**: the 18 known labels in the canonical order of the spec, then unknown
+  labels in the order the model returned them. Clients sort for display.
+- **Unfamiliar labels**: kept with `known: false` and `above_cutoff` computed the same way.
+  A missing known label, a duplicate label or a score outside 0–1 is still `invalid_output`.
+- **All-or-nothing run**: when both models are needed and either fails, `techniques`
+  fails (no partial result), so a client never mistakes a single result for the full one.
+- **Per-sentence detections and offsets dropped** (the issue leaves this to the planner):
+  the NCI models score a whole text; sentence highlighting can return as a later additive
+  member if a client needs it.
+- **Cutoffs**: `nci-technique` 0.5, `nci-social` 0.3 by default, configurable per model in
+  the registry and echoed as `cutoff`; `above_cutoff` is `score >= cutoff`.
+- **No frontend or project task** (issue non-goals; no integration suite runs ML models).
+  **One backend task** (adapter, registry validation, example, README, tests).
 
-## Overlapping feature (junction-2026/project#14)
+## Overlapping feature (junction-2026/project#15)
 
-#14 (`merge-scraper-drop-facebook`, IMPLEMENTING) runs in parallel and changes the
-backend local capability `analyzer-registry` (backend task `merge-scraper-into-orchestrator`).
-This plan does not contradict it:
-
-- Shared: no overlap. This change adds only `technique-classifier-result`; it does not
-  modify `analysis-jobs-api` or `social-scraper-api`, and does not read
-  `input.source.metadata.scrape` or depend on scraping (routing ignores `input.source`,
-  so scraped jobs, Facebook removal and in-process scraping do not affect it).
-- Backend `analyzer-registry`: the backend task's local change uses **ADDED requirements
-  only** (technique classifier settings, validation, example) and does not modify
-  requirements #14 may touch (`Bot detection example`, `Execution settings`,
-  `Execution validation`, `Environment placeholders`). The README gets a new
-  "Technique classifier" section; the scraper/bot-detection sections are not edited.
-  No `SCRAPER_*` variable is used or documented.
-- Whichever of the two backend PRs merges second rebases onto the other; textual
-  conflicts are limited to registry adapter-name switch statements and README, and
-  resolve by keeping both sides.
+This rewrites #15's active, unarchived change. #15 has no backend code on main
+(backend @ 69f5c6d has no `techniques`/`technique_classifier` code). If #15's backend
+child `backend-technique-classifier` is still open, the orchestrator must supersede or
+re-pin it to this revision: it would otherwise implement the removed shape. This plan's
+backend child replaces it (same adapter name `technique_classifier`, new local change id).
 
 ## Impact
 
-- backend: new `technique_classifier` adapter and registry keys, display-name map,
+- backend: new `technique_classifier` adapter and registry keys,
   `docs/examples/technique_classifier.yaml`, README section, stub-service tests.
-- frontend, project: no change.
+- frontend, project: no change. No existing client reads `techniques`.
