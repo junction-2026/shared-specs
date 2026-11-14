@@ -5,42 +5,42 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 28
+      "durationMs": 32
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 9
+      "durationMs": 14
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 3
+      "durationMs": 6
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 0
+      "durationMs": 3
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 2
     },
     {
       "id": "job-text-localization",
-      "type": "change",
+      "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 109
+      "durationMs": 9
     },
     {
       "id": "llm-technique-result",
@@ -54,21 +54,21 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 6
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 5
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 2
     },
     {
       "id": "technique-classifier-result",
@@ -78,25 +78,25 @@
       "durationMs": 8
     },
     {
+      "id": "term-context",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 112
+    },
+    {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 5
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
-    },
-    {
-      "id": "wikipedia-passage-coverage",
-      "type": "change",
-      "valid": true,
-      "issues": [],
-      "durationMs": 127
+      "durationMs": 4
     }
   ],
   "summary": {
@@ -107,20 +107,20 @@
     },
     "byType": {
       "change": {
-        "items": 2,
-        "passed": 2,
+        "items": 1,
+        "passed": 1,
         "failed": 0
       },
       "spec": {
-        "items": 12,
-        "passed": 12,
+        "items": 13,
+        "passed": 13,
         "failed": 0
       }
     }
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/b5457abf-90e4-4bed-a831-fbb642745135",
+    "path": "/srv/junction/worktrees/shared-specs/c9cca6aa-c053-4976-a52c-4cc38199ba9a",
     "source": "nearest"
   }
 }

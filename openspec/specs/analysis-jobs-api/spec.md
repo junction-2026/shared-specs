@@ -13,18 +13,30 @@ The Input object SHALL have at least: `content` (string, required, non-empty aft
 - **THEN** the job's `input` contains `"content": "hello"`, `"content_type": "text/plain"` and `"source": {}`
 
 ### Requirement: Create job
-`POST /api/v1/jobs` SHALL accept the body `{"input": Input, "analyzers": [<analyzer id>] (optional), "options": {"finalize": <boolean, default true>} (optional)}`, or the same body with `"scrape": ScrapeRequest` instead of `input`, and respond 201 with the created Job and the header `Location: /api/v1/jobs/{id}`. Scraping and analysis SHALL start asynchronously; the response MUST NOT wait for the scraper or any analyzer.
+`POST /api/v1/jobs` SHALL accept the body `{"input": Input, "analyzers": [<analyzer id>] (optional), "options": {"finalize": <boolean, default true>} (optional), "public": <boolean, default true> (optional)}`, or the same body with `"scrape": ScrapeRequest` instead of `input`, and respond 201 with the created Job and the header `Location: /api/v1/jobs/{id}`. Scraping and analysis SHALL start asynchronously; the response MUST NOT wait for the scraper or any analyzer.
 
 #### Scenario: Job created
 - **WHEN** a client posts `{"input": {"content": "Some article text"}}`
-- **THEN** the status is 201, the body is a Job with `status` `queued` or `running` and `done: false`, and every non-finalizer registry analyzer appears in `analyzers`
+- **THEN** the status is 201, the body is a Job with `status` `queued` or `running`, `done: false` and `public: true`, and every non-finalizer registry analyzer appears in `analyzers`
+
+#### Scenario: Non-public job created
+- **WHEN** a client posts `{"input": {"content": "Some article text"}, "public": false}`
+- **THEN** the status is 201, the body is a Job with `public: false`, and the job is analysed like a public job
+
+#### Scenario: Non-public scrape job created
+- **WHEN** a client posts `{"scrape": {"url": "https://bsky.app/profile/alice.bsky.social/post/3kxyz"}, "public": false}`
+- **THEN** the status is 201 and the body is a Job with `public: false` and `scrape.url` the requested URL
 
 ### Requirement: Create job validation
-`POST /api/v1/jobs` SHALL reject a body larger than 1 MiB (1 048 576 bytes) with 413 `payload_too_large`, and SHALL respond 422 `validation_failed` for a missing or blank `input.content`, wrong member types, an unsupported `content_type`, an invalid `source.url` or `source.published_at`, duplicate ids in `analyzers`, or an invalid ScrapeRequest (Scrape request validation).
+`POST /api/v1/jobs` SHALL reject a body larger than 1 MiB (1 048 576 bytes) with 413 `payload_too_large`, and SHALL respond 422 `validation_failed` for a missing or blank `input.content`, wrong member types, an unsupported `content_type`, an invalid `source.url` or `source.published_at`, duplicate ids in `analyzers`, an invalid ScrapeRequest (Scrape request validation), or a `public` member that is present and is not `true` or `false` (`null` included), with `details.fields` key `public`.
 
 #### Scenario: Blank content
 - **WHEN** a client posts `{"input": {"content": "   "}}`
 - **THEN** the status is 422 with `error.code` `validation_failed`
+
+#### Scenario: Invalid public flag
+- **WHEN** a client posts `{"input": {"content": "x"}, "public": "no"}` or `{"input": {"content": "x"}, "public": null}`
+- **THEN** the status is 422 with `error.code` `validation_failed`, `error.details.fields` has the key `public`, and no job is created
 
 ### Requirement: Analyzer selection
 When `analyzers` is omitted, every analyzer is selected. When it is present (even empty), only the listed analyzers and their transitive dependencies are selected and every other analyzer SHALL be `skipped` with reason `not_selected`. Naming an unknown id SHALL yield 422 `unknown_analyzer` with `details.analyzer_ids`. Naming an analyzer with trigger `after_all_analyzers_settled` SHALL yield 422 `analyzer_not_selectable`. Naming a disabled analyzer is not an error.
@@ -42,7 +54,7 @@ When `analyzers` is omitted, every analyzer is selected. When it is present (eve
 - **THEN** the status is 422 with `error.code` `analyzer_not_selectable`
 
 ### Requirement: Job object
-The Job object SHALL have at least: `id`; `status`; `done` (boolean); `created_at`; `started_at` and `finished_at` (timestamp or null, `finished_at` set when `done` becomes true); `input` (Input with defaults applied; see Input of scrape jobs); `scrape` (Scrape object, or null for a job created with `input`); `options` with at least `finalize` (boolean); `analyzers` (array of AnalyzerRun); `coverage` (Coverage); `finalization` (Finalization).
+The Job object SHALL have at least: `id`; `status`; `done` (boolean); `created_at`; `started_at` and `finished_at` (timestamp or null, `finished_at` set when `done` becomes true); `input` (Input with defaults applied; see Input of scrape jobs); `scrape` (Scrape object, or null for a job created with `input`); `options` with at least `finalize` (boolean); `public` (boolean, see Job visibility); `analyzers` (array of AnalyzerRun); `coverage` (Coverage); `finalization` (Finalization).
 
 #### Scenario: Fresh job
 - **WHEN** a job has just been created
@@ -128,15 +140,15 @@ Finalization SHALL start only after every AnalyzerRun of the job is settled, reg
 - **THEN** `finalization.status` is `failed` with `error.code: adapter_error`, every AnalyzerRun keeps its `result`, and the job ends `completed`
 
 ### Requirement: FinalAssessment object
-The FinalAssessment object SHALL have at least: `verdict` (see "Verdict values"); `confidence` (number 0–1, or null when the finalizer gave none); `user_text` (non-empty plain-language explanation for the end user); `produced_by` (`finalizer` or `orchestrator`); `usage` (token usage object reported by the finalizer adapter, or null); `attempts` and `retry_reason` (see "FinalAssessment retry members").
+The FinalAssessment object SHALL have at least: `verdict` (see "Verdict values"); `confidence` (number 0–1, or null when the finalizer gave none); `user_text` (non-empty plain-language explanation for the end user); `produced_by` (`finalizer` or `orchestrator`); `usage` (token usage object reported by the finalizer adapter, or null); `attempts` and `retry_reason` (see "FinalAssessment retry members"); `wikipedia_quotes` (see "Wikipedia quotes in the final assessment").
 
 #### Scenario: Risk assessment
 - **WHEN** the `llm` finalizer's first reply is `{"verdict": "detected", "confidence": 0.86, "user_text": "This post shows signs of propaganda."}` and the provider reported `{"prompt_tokens": 512, "completion_tokens": 48, "total_tokens": 560}`
-- **THEN** `finalization.result` is at least `{"verdict": "detected", "confidence": 0.86, "user_text": "This post shows signs of propaganda.", "produced_by": "finalizer", "usage": {"prompt_tokens": 512, "completion_tokens": 48, "total_tokens": 560}, "attempts": 1, "retry_reason": null}`
+- **THEN** `finalization.result` is at least `{"verdict": "detected", "confidence": 0.86, "user_text": "This post shows signs of propaganda.", "produced_by": "finalizer", "usage": {"prompt_tokens": 512, "completion_tokens": 48, "total_tokens": 560}, "attempts": 1, "retry_reason": null, "wikipedia_quotes": []}`
 
 #### Scenario: No confidence and no usage
 - **WHEN** an `http_sync` finalizer returns `{"verdict": "uncertain", "user_text": "The analyzers disagree."}`
-- **THEN** `finalization.result` has `confidence: null`, `usage: null`, `produced_by: finalizer`, `attempts: null` and `retry_reason: null`
+- **THEN** `finalization.result` has `confidence: null`, `usage: null`, `produced_by: finalizer`, `attempts: null`, `retry_reason: null` and `wikipedia_quotes: []`
 
 ### Requirement: Insufficient evidence without fabricated score
 When finalization is enabled and configured but no AnalyzerRun that the finalizer would receive has `succeeded` (for the `llm` adapter, the analyzers opted in to LLM input; otherwise every AnalyzerRun), the orchestrator SHALL NOT call the finalizer and SHALL complete finalization with a FinalAssessment of at least `{"verdict": "uncertain", "confidence": null, "user_text": <non-empty fixed text>, "produced_by": "orchestrator", "usage": null, "attempts": null, "retry_reason": null}`.
@@ -157,7 +169,7 @@ When finalization is enabled and configured but no AnalyzerRun that the finalize
 - **THEN** `GET /api/v1/jobs/{id}` returns `finalization.status: completed` with `finalization.result` set
 
 ### Requirement: List jobs
-`GET /api/v1/jobs` SHALL return jobs newest first (by `created_at`, ties by `id`) with cursor pagination and an optional `status` filter (an unknown value yields 400 `invalid_request`). Each item SHALL be a JobSummary with at least `id`, `status`, `done`, `created_at`, `finished_at`, `coverage` and `finalization` as `{"status", "verdict"}`, where `verdict` is the FinalAssessment verdict or null.
+`GET /api/v1/jobs` SHALL return only jobs with `public: true` (Listing excludes non-public jobs), newest first (by `created_at`, ties by `id`), with cursor pagination and an optional `status` filter (an unknown value yields 400 `invalid_request`). Each item SHALL be a JobSummary with at least `id`, `status`, `done`, `created_at`, `finished_at`, `coverage` and `finalization` as `{"status", "verdict"}`, where `verdict` is the FinalAssessment verdict or null.
 
 #### Scenario: Filter by status
 - **WHEN** a client calls `GET /api/v1/jobs?status=running`
@@ -496,11 +508,15 @@ A deployment MAY keep job history persistently. When it does, every job SHALL su
 - **THEN** `GET /api/v1/jobs/{id}` returns the Job with the same `status`, timestamps, `analyzers` (each `result` equivalent JSON, unknown members included) and `finalization.result`
 
 ### Requirement: Persisted jobs in listing and cancel
-With persistent history, `GET /api/v1/jobs` SHALL include persisted jobs with the same JobSummary, ordering (newest first by `created_at`, ties by `id`), `status` filter and cursor pagination as live jobs. `POST /api/v1/jobs/{id}/cancel` on a persisted done job SHALL yield 409 `job_finished`.
+With persistent history, `GET /api/v1/jobs` SHALL include persisted jobs with `public: true` with the same JobSummary, ordering (newest first by `created_at`, ties by `id`), `status` filter, cursor pagination and exclusion of non-public jobs as live jobs. `POST /api/v1/jobs/{id}/cancel` on a persisted done job SHALL yield 409 `job_finished`.
 
 #### Scenario: Listing after a restart
-- **WHEN** three jobs exist and the server is restarted
+- **WHEN** three public jobs exist and the server is restarted
 - **THEN** `GET /api/v1/jobs?limit=2` returns the two newest with a non-null `next_cursor`, and following it returns the third
+
+#### Scenario: Non-public job after a restart
+- **WHEN** a job created with `"public": false` exists and the server is restarted
+- **THEN** `GET /api/v1/jobs/{id}` returns it with `public: false` and `GET /api/v1/jobs` does not list it
 
 #### Scenario: Cancel a persisted finished job
 - **WHEN** a client cancels a job that completed before the restart
@@ -541,3 +557,80 @@ An AnalyzerRun, Scrape or finalization changed by "Interrupted parts" SHALL get 
 #### Scenario: Pending run timing
 - **WHEN** a `pending` AnalyzerRun becomes `skipped` with `interrupted`
 - **THEN** it has `started_at: null`, `duration_ms: null`, a non-null `finished_at` and `availability: unavailable`
+
+### Requirement: Wikipedia quotes in the final assessment
+`wikipedia_quotes` of a FinalAssessment SHALL be an array of WikipediaQuote objects, empty when the finalizer kept none, when `produced_by` is `orchestrator` and when the job has no succeeded `wikipedia` AnalyzerRun. A WikipediaQuote SHALL have at least `claim` (a ClaimLookup `claim`), `language` (a WikiLookup `language`), `quote` (string), and `title`, `url`, `revision_id` and `coverage`, which the orchestrator copies from that WikiLookup.
+
+#### Scenario: Assessment without Wikipedia
+- **WHEN** the job has no `wikipedia` AnalyzerRun, or finalization is produced by the orchestrator
+- **THEN** `finalization.result.wikipedia_quotes` is `[]`
+
+### Requirement: Wikipedia quotes in persisted and interrupted jobs
+With persistent history ("Job history persistence"), `wikipedia_quotes` SHALL be returned after a restart unchanged from when the job finalized; the orchestrator SHALL NOT re-verify or change it. A finalization ended by "Interrupted parts" has `result` null and therefore no `wikipedia_quotes`.
+
+#### Scenario: Quotes after a restart
+- **WHEN** a job finalized with one kept WikipediaQuote and the server is restarted
+- **THEN** `GET /api/v1/jobs/{id}` returns `finalization.result.wikipedia_quotes` with that same entry
+
+#### Scenario: Finalization interrupted
+- **WHEN** the server stops while a job's finalization is `running` and starts again
+- **THEN** `finalization.status` is `failed` with `error.code: interrupted`, `finalization.result` is null and no Wikipedia quotation is shown
+
+### Requirement: Wikipedia quote verification
+The orchestrator SHALL keep a finalizer-proposed quote only when the job's succeeded `wikipedia` AnalyzerRun has a ClaimLookup with an equal `claim` holding a WikiLookup with an equal `language`, `status` `found` and a `coverage` other than `no_coverage` (see "Unverifiable evidence"), whose `passage` contains the proposed `quote`, trimmed and non-empty, as a substring. It SHALL store the trimmed text and drop every other proposed quote without failing finalization.
+
+#### Scenario: Valid quote kept
+- **WHEN** the job's `wikipedia` result has a ClaimLookup `claim: "Angela Merkel became chancellor in 2006."` with an `en` WikiLookup `status: "found"`, `coverage: "conflicts"`, `title: "Angela Merkel"`, `revision_id: 1250000000` and a `passage` containing "Chancellor of Germany from 2005 to 2021", and the finalizer returns `"wikipedia_quotes": [{"claim": "Angela Merkel became chancellor in 2006.", "language": "en", "quote": " Chancellor of Germany from 2005 to 2021 "}]`
+- **THEN** `finalization.result.wikipedia_quotes` is at least `[{"claim": "Angela Merkel became chancellor in 2006.", "language": "en", "quote": "Chancellor of Germany from 2005 to 2021", "title": "Angela Merkel", "url": "<the WikiLookup url>", "revision_id": 1250000000, "coverage": "conflicts"}]`
+
+#### Scenario: Paraphrase dropped
+- **WHEN** the finalizer proposes a quote "Merkel took office in 2005" that is not a substring of the cited `passage`
+- **THEN** the quote is not in `finalization.result.wikipedia_quotes`, and finalization is `completed` with the finalizer's `verdict` and `user_text`
+
+#### Scenario: Quote from an uncovered entry dropped
+- **WHEN** the finalizer quotes a substring of a `passage` whose WikiLookup has `coverage: "no_coverage"`
+- **THEN** the quote is dropped
+
+### Requirement: Wikipedia quotes for clients
+Clients SHALL treat an absent `wikipedia_quotes` (results stored before this member existed) as an empty array, SHALL render `quote`, `claim` and `title` as plain text, and SHALL present only `wikipedia_quotes` entries as quotations from Wikipedia.
+
+#### Scenario: Stored assessment without quotes
+- **WHEN** a client reads a FinalAssessment without `wikipedia_quotes`
+- **THEN** it shows no Wikipedia quotation
+
+### Requirement: Job visibility
+A job's `public` member SHALL be the value given at creation, `true` when the create body omits it, and SHALL NOT change afterwards; no endpoint changes it. A job stored before this member existed SHALL be reported with `public: true` and listed like other public jobs. `public: false` means unlisted, not secret: it SHALL NOT add authentication or access control, and anyone who knows the job id can read it.
+
+#### Scenario: Default is public
+- **WHEN** a client creates a job without a `public` member
+- **THEN** the Job has `public: true` and `GET /api/v1/jobs` lists it
+
+#### Scenario: Job stored before the member existed
+- **WHEN** a deployment with persistent history upgrades and reads a job stored without `public`
+- **THEN** `GET /api/v1/jobs/{id}` returns it with `public: true` and `GET /api/v1/jobs` lists it
+
+### Requirement: Listing excludes non-public jobs
+`GET /api/v1/jobs` SHALL leave out jobs with `public: false` before paging, with and without the `status` filter: `limit` and `next_cursor` SHALL count public jobs only, so a page holds `limit` items whenever at least that many matching public jobs follow the cursor, and `next_cursor` SHALL be null when no matching public job follows.
+
+#### Scenario: Non-public jobs not listed
+- **WHEN** jobs A (public), B (`public: false`) and C (public) were created in that order and a client calls `GET /api/v1/jobs`
+- **THEN** the items are C then A, and B appears in no page with or without a `status` filter
+
+#### Scenario: Paging skips non-public jobs
+- **WHEN** jobs P1, P2, P3 (public) and U1, U2 (`public: false`) were created interleaved and a client calls `GET /api/v1/jobs?limit=2`
+- **THEN** the first page holds the two newest public jobs with a non-null `next_cursor`, following it returns the remaining public job with `next_cursor: null`, and no page holds U1 or U2
+
+### Requirement: Unlisted jobs by id
+`GET /api/v1/jobs/{id}`, `POST /api/v1/jobs/{id}/cancel` and `GET /api/v1/jobs/{id}/events` (analysis-job-events) SHALL behave for a job with `public: false` the same as for a public job; the Job they return or carry (including `data.job` of `job.snapshot` and the terminal events) SHALL have `public: false`.
+
+#### Scenario: Read an unlisted job by URL
+- **WHEN** a client that did not create a job with `public: false` calls `GET /api/v1/jobs/{id}` for it
+- **THEN** the status is 200 and the body is the Job with `public: false`
+
+#### Scenario: Follow an unlisted job
+- **WHEN** a client connects to `GET /api/v1/jobs/{id}/events` of a running job with `public: false`
+- **THEN** it receives `job.snapshot` with `data.job.public: false` and every later event of the job as for a public job
+
+#### Scenario: Cancel an unlisted job
+- **WHEN** a client cancels a running job with `public: false`
+- **THEN** the status is 202 and the job reaches `status: cancelled`
