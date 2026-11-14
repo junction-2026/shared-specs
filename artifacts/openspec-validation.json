@@ -1,0 +1,70 @@
+{
+  "items": [
+    {
+      "id": "analysis-job-events",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 13
+    },
+    {
+      "id": "analysis-jobs-api",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 5
+    },
+    {
+      "id": "analyzer-service-protocol",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 2
+    },
+    {
+      "id": "api-conventions",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
+    },
+    {
+      "id": "llm-topic-extraction",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 38
+    },
+    {
+      "id": "social-media-scrape-input",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 51
+    }
+  ],
+  "summary": {
+    "totals": {
+      "items": 6,
+      "passed": 6,
+      "failed": 0
+    },
+    "byType": {
+      "change": {
+        "items": 2,
+        "passed": 2,
+        "failed": 0
+      },
+      "spec": {
+        "items": 4,
+        "passed": 4,
+        "failed": 0
+      }
+    }
+  },
+  "version": "1.0",
+  "root": {
+    "path": "/srv/junction/worktrees/shared-specs/25f5a29f-99a4-4263-9ddd-bda601bba341",
+    "source": "nearest"
+  }
+}

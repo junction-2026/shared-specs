@@ -42,6 +42,33 @@ changing the finalizer, frontend display.
    `cancelled`) from "AnalyzerRun outcomes" (`analysis-jobs-api/spec.md:72-78`); no
    new code is introduced.
 
+8. **Bounded input with `input_truncated`.** Scrape jobs (project#8) may set
+   `Job.input.content` to up to 100 joined posts. The backend cuts content longer than
+   its configured `max_input_chars` (default 20000 code points, same cut rule as the
+   merged `mistral_translation` analyzer) and reports `input_truncated: true`, so a
+   client can tell "not found" from "not analysed". Blank content fails with
+   `adapter_error` without an LLM call.
+9. **Parallel with project#8 on `backend/analyzer-registry`.** project#8's backend
+   children add the scraper (`scraper/`), the orchestrator scrape phase
+   (`internal/job`, `internal/httpapi`, config `SCRAPER_*`), `docs/examples/bot_detection.yaml`,
+   one ADDED backend requirement "Bot detection example" and a README section; they
+   do not touch `internal/registry` or `internal/adapter/llm.go`. This feature's
+   backend child:
+   - owns `internal/registry`, `internal/adapter/llm.go` (+ tests), a new
+     `config/extractor/prompt.md`, one `COPY` line in the root `Dockerfile`,
+     `docs/examples/topic_extraction.yaml` and a new README section "Topic
+     extraction analyzer"; it does not edit `docs/examples/bot_detection.yaml`,
+     `docs/examples/propaganda_detection.yaml`, `scraper/`, the scrape phase or
+     the README sections of project#8 or project#7;
+   - adds analyzer-registry requirements with new names (prefix "Topic extraction")
+     and modifies only "LLM execution validation", "LLM execution settings" and
+     "LLM finalizer startup checks", none of which project#8 touches;
+   - needs nothing from project#8: the analyzer reads `normalized_content`, which a
+     scrape job has once its scrape succeeded and before any analyzer starts. After
+     a failed scrape it is `skipped` with `input_unavailable` like every analyzer
+     (clients already treat `skipped` as "no extraction"). Whichever feature merges
+     first, the other needs no change beyond a textual README/spec rebase.
+
 ## Compatibility classification
 
 | Use | Evidence | Change | Class |
@@ -49,6 +76,7 @@ changing the finalizer, frontend display.
 | AnalyzerRun `result` | `analysis-jobs-api/spec.md:65-70` (any JSON object when `succeeded`) | defines the object for `topic_extraction` | shared-additive (new capability; existing members unchanged) |
 | `analyzer.succeeded` event `data.analyzer.result` | `analysis-job-events/spec.md:34` ("Analyzer events") | carries the same object | shared-additive |
 | `Job.analyzers` / `GET /api/v1/analyzers` | `analysis-jobs-api/spec.md:58` ("Job analyzer list"), `:172` ("List analyzers") | one more registry analyzer listed when configured | shared-additive (registry data, no schema change) |
+| Scrape jobs (project#8 active change) | `social-media-scrape-input/specs/analysis-jobs-api/spec.md:106` (Scraped input mapping), skip reason `input_unavailable` | analyzer reads the mapped `Job.input`; skipped like others after a failed scrape | no change to either contract |
 | AnalyzerRun error codes | `analysis-jobs-api/spec.md:72-78` | reuses `invalid_output`, `adapter_error`, `timeout`, `cancelled` | no change |
 | Analyzer selection | `analysis-jobs-api/spec.md:29-43` | `topic_extraction` is selectable like any regular analyzer | no change |
 | Finalizer input / FinalAssessment | `analysis-jobs-api/spec.md:122-145`, `analyzer-service-protocol/spec.md:71-106` | analyzer may be opted into LLM input by backend configuration; FinalAssessment shape unchanged | no change |

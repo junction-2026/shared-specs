@@ -23,7 +23,7 @@ placeholder), shared-specs @ 7885bffdf154823a03961f0fb8dc0349d770752e (active ch
 
 - **topic-extraction-result** (new capability): the result object of the topic
   extraction analyzer (id `topic_extraction`): `topics` (`title`, `query`,
-  `description`), `news` (`headline`, `summary`), `usage`; validation (invalid model
+  `description`), `news` (`headline`, `summary`), `input_truncated`, `usage`; validation (invalid model
   output fails only this analyzer with `invalid_output`), output normalization,
   empty lists as a valid outcome, plain-text rendering of model output, credential-free
   error messages, and that it is an ordinary selectable analyzer.
@@ -42,6 +42,12 @@ deltas.
 - **No frontend task.** The frontend has no job view or submission form yet
   (`frontend/src` has only the health page); showing topics/news needs that view
   first and is left to a later feature. The issue marks the display optional.
+- **Parallel with project#8** (`social-media-scrape-input`, implementing): no shared
+  requirement of that change is modified; scrape jobs feed the analyzer through the
+  ordinary `Job.input`. Backend-local rules keep the two features' files and
+  `backend/analyzer-registry` requirements disjoint (design.md decision 9).
+- **Bounded input** (`input_truncated`): scraped profile history can be up to 100
+  posts, so the backend cuts long content (default 20000 characters) and says so.
 - **One backend task.** Registry, adapter, prompt, example, README and tests touch
   about 10 files in one area.
 
