@@ -128,15 +128,15 @@ Finalization SHALL start only after every AnalyzerRun of the job is settled, reg
 - **THEN** `finalization.status` is `failed` with `error.code: adapter_error`, every AnalyzerRun keeps its `result`, and the job ends `completed`
 
 ### Requirement: FinalAssessment object
-The FinalAssessment object SHALL have at least: `verdict` (see "Verdict values"); `confidence` (number 0–1, or null when the finalizer gave none); `user_text` (non-empty plain-language explanation for the end user); `produced_by` (`finalizer` or `orchestrator`); `usage` (token usage object reported by the finalizer adapter, or null); `attempts` and `retry_reason` (see "FinalAssessment retry members").
+The FinalAssessment object SHALL have at least: `verdict` (see "Verdict values"); `confidence` (number 0–1, or null when the finalizer gave none); `user_text` (non-empty plain-language explanation for the end user); `produced_by` (`finalizer` or `orchestrator`); `usage` (token usage object reported by the finalizer adapter, or null); `attempts` and `retry_reason` (see "FinalAssessment retry members"); `wikipedia_quotes` (see "Wikipedia quotes in the final assessment").
 
 #### Scenario: Risk assessment
 - **WHEN** the `llm` finalizer's first reply is `{"verdict": "detected", "confidence": 0.86, "user_text": "This post shows signs of propaganda."}` and the provider reported `{"prompt_tokens": 512, "completion_tokens": 48, "total_tokens": 560}`
-- **THEN** `finalization.result` is at least `{"verdict": "detected", "confidence": 0.86, "user_text": "This post shows signs of propaganda.", "produced_by": "finalizer", "usage": {"prompt_tokens": 512, "completion_tokens": 48, "total_tokens": 560}, "attempts": 1, "retry_reason": null}`
+- **THEN** `finalization.result` is at least `{"verdict": "detected", "confidence": 0.86, "user_text": "This post shows signs of propaganda.", "produced_by": "finalizer", "usage": {"prompt_tokens": 512, "completion_tokens": 48, "total_tokens": 560}, "attempts": 1, "retry_reason": null, "wikipedia_quotes": []}`
 
 #### Scenario: No confidence and no usage
 - **WHEN** an `http_sync` finalizer returns `{"verdict": "uncertain", "user_text": "The analyzers disagree."}`
-- **THEN** `finalization.result` has `confidence: null`, `usage: null`, `produced_by: finalizer`, `attempts: null` and `retry_reason: null`
+- **THEN** `finalization.result` has `confidence: null`, `usage: null`, `produced_by: finalizer`, `attempts: null`, `retry_reason: null` and `wikipedia_quotes: []`
 
 ### Requirement: Insufficient evidence without fabricated score
 When finalization is enabled and configured but no AnalyzerRun that the finalizer would receive has `succeeded` (for the `llm` adapter, the analyzers opted in to LLM input; otherwise every AnalyzerRun), the orchestrator SHALL NOT call the finalizer and SHALL complete finalization with a FinalAssessment of at least `{"verdict": "uncertain", "confidence": null, "user_text": <non-empty fixed text>, "produced_by": "orchestrator", "usage": null, "attempts": null, "retry_reason": null}`.
@@ -541,3 +541,43 @@ An AnalyzerRun, Scrape or finalization changed by "Interrupted parts" SHALL get 
 #### Scenario: Pending run timing
 - **WHEN** a `pending` AnalyzerRun becomes `skipped` with `interrupted`
 - **THEN** it has `started_at: null`, `duration_ms: null`, a non-null `finished_at` and `availability: unavailable`
+
+### Requirement: Wikipedia quotes in the final assessment
+`wikipedia_quotes` of a FinalAssessment SHALL be an array of WikipediaQuote objects, empty when the finalizer kept none, when `produced_by` is `orchestrator` and when the job has no succeeded `wikipedia` AnalyzerRun. A WikipediaQuote SHALL have at least `claim` (a ClaimLookup `claim`), `language` (a WikiLookup `language`), `quote` (string), and `title`, `url`, `revision_id` and `coverage`, which the orchestrator copies from that WikiLookup.
+
+#### Scenario: Assessment without Wikipedia
+- **WHEN** the job has no `wikipedia` AnalyzerRun, or finalization is produced by the orchestrator
+- **THEN** `finalization.result.wikipedia_quotes` is `[]`
+
+### Requirement: Wikipedia quotes in persisted and interrupted jobs
+With persistent history ("Job history persistence"), `wikipedia_quotes` SHALL be returned after a restart unchanged from when the job finalized; the orchestrator SHALL NOT re-verify or change it. A finalization ended by "Interrupted parts" has `result` null and therefore no `wikipedia_quotes`.
+
+#### Scenario: Quotes after a restart
+- **WHEN** a job finalized with one kept WikipediaQuote and the server is restarted
+- **THEN** `GET /api/v1/jobs/{id}` returns `finalization.result.wikipedia_quotes` with that same entry
+
+#### Scenario: Finalization interrupted
+- **WHEN** the server stops while a job's finalization is `running` and starts again
+- **THEN** `finalization.status` is `failed` with `error.code: interrupted`, `finalization.result` is null and no Wikipedia quotation is shown
+
+### Requirement: Wikipedia quote verification
+The orchestrator SHALL keep a finalizer-proposed quote only when the job's succeeded `wikipedia` AnalyzerRun has a ClaimLookup with an equal `claim` holding a WikiLookup with an equal `language`, `status` `found` and a `coverage` other than `no_coverage` (see "Unverifiable evidence"), whose `passage` contains the proposed `quote`, trimmed and non-empty, as a substring. It SHALL store the trimmed text and drop every other proposed quote without failing finalization.
+
+#### Scenario: Valid quote kept
+- **WHEN** the job's `wikipedia` result has a ClaimLookup `claim: "Angela Merkel became chancellor in 2006."` with an `en` WikiLookup `status: "found"`, `coverage: "conflicts"`, `title: "Angela Merkel"`, `revision_id: 1250000000` and a `passage` containing "Chancellor of Germany from 2005 to 2021", and the finalizer returns `"wikipedia_quotes": [{"claim": "Angela Merkel became chancellor in 2006.", "language": "en", "quote": " Chancellor of Germany from 2005 to 2021 "}]`
+- **THEN** `finalization.result.wikipedia_quotes` is at least `[{"claim": "Angela Merkel became chancellor in 2006.", "language": "en", "quote": "Chancellor of Germany from 2005 to 2021", "title": "Angela Merkel", "url": "<the WikiLookup url>", "revision_id": 1250000000, "coverage": "conflicts"}]`
+
+#### Scenario: Paraphrase dropped
+- **WHEN** the finalizer proposes a quote "Merkel took office in 2005" that is not a substring of the cited `passage`
+- **THEN** the quote is not in `finalization.result.wikipedia_quotes`, and finalization is `completed` with the finalizer's `verdict` and `user_text`
+
+#### Scenario: Quote from an uncovered entry dropped
+- **WHEN** the finalizer quotes a substring of a `passage` whose WikiLookup has `coverage: "no_coverage"`
+- **THEN** the quote is dropped
+
+### Requirement: Wikipedia quotes for clients
+Clients SHALL treat an absent `wikipedia_quotes` (results stored before this member existed) as an empty array, SHALL render `quote`, `claim` and `title` as plain text, and SHALL present only `wikipedia_quotes` entries as quotations from Wikipedia.
+
+#### Scenario: Stored assessment without quotes
+- **WHEN** a client reads a FinalAssessment without `wikipedia_quotes`
+- **THEN** it shows no Wikipedia quotation

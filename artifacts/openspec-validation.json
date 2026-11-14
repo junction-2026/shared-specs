@@ -5,14 +5,14 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 30
+      "durationMs": 15
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 10
+      "durationMs": 6
     },
     {
       "id": "analyzer-service-protocol",
@@ -26,77 +26,77 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 2
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 1
     },
     {
       "id": "job-text-localization",
-      "type": "change",
-      "valid": true,
-      "issues": [],
-      "durationMs": 122
-    },
-    {
-      "id": "llm-technique-result",
-      "type": "spec",
-      "valid": true,
-      "issues": [],
-      "durationMs": 6
-    },
-    {
-      "id": "news-search-result",
-      "type": "spec",
-      "valid": true,
-      "issues": [],
-      "durationMs": 5
-    },
-    {
-      "id": "persistent-job-history",
-      "type": "change",
-      "valid": true,
-      "issues": [],
-      "durationMs": 121
-    },
-    {
-      "id": "social-scraper-api",
-      "type": "spec",
-      "valid": true,
-      "issues": [],
-      "durationMs": 3
-    },
-    {
-      "id": "source-info-result",
-      "type": "spec",
-      "valid": true,
-      "issues": [],
-      "durationMs": 9
-    },
-    {
-      "id": "technique-classifier-result",
-      "type": "spec",
-      "valid": true,
-      "issues": [],
-      "durationMs": 8
-    },
-    {
-      "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
       "durationMs": 4
     },
     {
-      "id": "wikipedia-lookup-result",
+      "id": "llm-technique-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 3
+    },
+    {
+      "id": "news-search-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 3
+    },
+    {
+      "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
       "durationMs": 2
+    },
+    {
+      "id": "source-info-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
+    },
+    {
+      "id": "technique-classifier-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 3
+    },
+    {
+      "id": "topic-extraction-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 2
+    },
+    {
+      "id": "wikipedia-cross-language",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 50
+    },
+    {
+      "id": "wikipedia-lookup-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 1
     }
   ],
   "summary": {
@@ -107,20 +107,20 @@
     },
     "byType": {
       "change": {
-        "items": 2,
-        "passed": 2,
+        "items": 1,
+        "passed": 1,
         "failed": 0
       },
       "spec": {
-        "items": 12,
-        "passed": 12,
+        "items": 13,
+        "passed": 13,
         "failed": 0
       }
     }
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/f1f1e88d-83d1-4d63-8495-b789b134164b",
+    "path": "/srv/junction/worktrees/shared-specs/57313480-81f0-4572-9b21-18042fa873b6",
     "source": "nearest"
   }
 }
