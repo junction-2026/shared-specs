@@ -1,8 +1,9 @@
 # Propaganda map: countries linked to detected propaganda across analyses (junction-2026/project#59)
 
-Based on backend @ 85cebc311e4b34337c064d0e5d85929dbbb206be, frontend @ 07d8c49ca54cb6e643d8bee82ba1c71c75c9e7b2,
-project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ e64613598d5da0836396308a99c3a46889cea6d0
-(main after `job-visibility` #53 and `wikipedia-cross-language` #47 were archived).
+Based on backend @ e8c46a1e6e4ab169e6376c5da627d0c71ae0b2ba, frontend @ 4339d356d14fb7a76474428da2756afcd0c184b1,
+project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 5bd40738633bfa21b0e371a364003408af42e773
+(main with `term-context` #49 active and `job-visibility` #53, `wikipedia-cross-language` #47 and
+`russian-localization-language` #60 archived).
 
 ## Why
 Explore's world map only shows the outlet countries of one job's news coverage (`/explore?job=<id>`). Users want
@@ -33,6 +34,11 @@ each country has, with a per-country list of those analyses.
   `technique-classifier-result` and `api-conventions` are read, not modified (see design.md for the evidence).
 - backend: store columns/table with migration and backfill, two read endpoints, tests.
 - frontend: `/explore` without `job` becomes the global propaganda map; `/explore?job=<id>` is unchanged.
-- Overlapping work: none active. `job-visibility` (#53) and `wikipedia-cross-language` (#47) are archived on main;
-  this change reads the canonical `public` member (non-public jobs never appear on the map) and modifies no
-  requirement of either. `base_changes` is empty.
+- Overlapping work: `term-context` (#49, active, IMPLEMENTING) modifies only the analysis-jobs-api requirement
+  "Wikipedia quotes for clients" and adds the `term_context` analyzer. This change modifies no analysis-jobs-api
+  requirement and does not read `term_context` results: a job's `term_context` run never decides map membership,
+  country or techniques. Both changes stay consistent in either merge order; nothing here builds on `term-context`,
+  so `base_changes` is empty. Frontend i18n: both features add keys to every UI locale (`en`, `fr`, `ar`, `de`,
+  `fi`, `ru`) in different namespaces (#49 results/term cards, #59 `explore`), so they do not collide.
+  `job-visibility` (#53), `wikipedia-cross-language` (#47) and `russian-localization-language` (#60) are archived on
+  main; this change reads the canonical `public` member (non-public jobs never appear on the map).

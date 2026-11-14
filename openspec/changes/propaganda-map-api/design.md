@@ -1,8 +1,9 @@
 # Design: propaganda-map-api (junction-2026/project#59)
 
-Based on backend @ 85cebc311e4b34337c064d0e5d85929dbbb206be, frontend @ 07d8c49ca54cb6e643d8bee82ba1c71c75c9e7b2,
-project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ e64613598d5da0836396308a99c3a46889cea6d0
-(main after `job-visibility` #53 and `wikipedia-cross-language` #47 were archived).
+Based on backend @ e8c46a1e6e4ab169e6376c5da627d0c71ae0b2ba, frontend @ 4339d356d14fb7a76474428da2756afcd0c184b1,
+project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 5bd40738633bfa21b0e371a364003408af42e773
+(main with `term-context` #49 active and `job-visibility` #53, `wikipedia-cross-language` #47 and
+`russian-localization-language` #60 archived).
 
 ## Decisions
 
@@ -41,7 +42,8 @@ than ignored, so the map is useful immediately after deploy.
 
 ## Compatibility classification (common rule 13 / step 2)
 
-Every object and endpoint this change touches or reuses, grepped in canonical specs on main @ e646135:
+Every object and endpoint this change touches or reuses, grepped in canonical specs on main @ 5bd4073 (analysis-jobs-api, source-info-result,
+technique-classifier-result and api-conventions are byte-identical to e646135, so the line numbers hold):
 
 | Item | Where used today | Change | Class |
 |---|---|---|---|
@@ -58,9 +60,18 @@ No existing member, status or error is removed, renamed or re-typed: **no shared
 migration**. Existing clients that never call `/api/v1/map/*` are unaffected. All new objects are "at least" objects
 (api-conventions.md:52); no "exactly" clause is introduced.
 
+## Overlap with term-context (#49, active)
+`term-context` modifies analysis-jobs-api "Wikipedia quotes for clients" (openspec/changes/term-context/specs/
+analysis-jobs-api/spec.md:3) and adds `term-context-result`. propaganda-map-api modifies no analysis-jobs-api
+requirement and ignores the `term_context` AnalyzerRun (Detected propaganda reads only `techniques`; Map country
+reads only `source_info` and `input.source.url`). The new `term_context` run in `analyzers[]` does not change a
+job's `done` state semantics, so the "Map values fixed when done" derivation is unaffected. No contradiction in
+either archive order.
+
 ## Non-shared (local) parts
 - backend: persisted map columns/table, migration + backfill, Memory-store derivation, query/index strategy, tests.
-- frontend: global map mode on `/explore`, shading scale, legend, tooltip, panel, keyboard/touch, i18n, tests;
+- frontend: global map mode on `/explore`, shading scale, legend, tooltip, panel, keyboard/touch, i18n in all six
+  UI locales (`en`, `fr`, `ar`, `de`, `fi`, `ru`, in the `explore` namespace), tests;
   `/explore?job=<id>` unchanged.
 
 ## Risks
