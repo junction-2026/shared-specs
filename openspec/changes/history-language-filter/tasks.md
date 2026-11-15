@@ -1,6 +1,6 @@
 ## 1. Shared contract
-- [ ] 1.1 Approve MODIFIED analysis-jobs-api "List jobs" and the ADDED requirements "Job list language filter", "Job list language paging", "Job list language scope", "JobSummary language", "JobSummary language for clients"
-- [ ] 1.2 At archive time re-check "List jobs" against canonical main: only the `language` filter and member are new
+- [ ] 1.1 Approve MODIFIED analysis-jobs-api "List jobs" and "Job country association member" (JobSummary wording only), and the ADDED requirements "Job list language filter", "Job list language paging", "Job list language scope", "JobSummary language", "JobSummary language for clients"
+- [ ] 1.2 At archive time re-check "List jobs" and "Job country association member" against canonical main: only the `language` filter and member and the JobSummary sentence are new
 
 ## 2. backend (child `backend-history-language`)
 - [ ] 2.1 Derived job language stored at write time (memory and SQLite), indexed

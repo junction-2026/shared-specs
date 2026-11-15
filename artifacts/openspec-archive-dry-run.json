@@ -5,35 +5,35 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 73
+      "durationMs": 18
     },
     {
       "id": "analysis-job-events",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 50
+      "durationMs": 9
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 41
+      "durationMs": 7
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 2
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 1
     },
     {
       "id": "bot-detection-result",
@@ -47,35 +47,35 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 11
+      "durationMs": 5
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 10
+      "durationMs": 4
     },
     {
       "id": "job-text-localization",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 4
     },
     {
       "id": "llm-technique-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 4
     },
     {
       "id": "manipulation-risk-score",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 3
     },
     {
       "id": "news-search-result",
@@ -89,49 +89,49 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 44
+      "durationMs": 6
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 37
+      "durationMs": 6
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 23
+      "durationMs": 4
     },
     {
       "id": "technique-classifier-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 18
+      "durationMs": 4
     },
     {
       "id": "term-context-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 10
+      "durationMs": 2
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 1
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 7
+      "durationMs": 2
     }
   ],
   "summary": {
@@ -155,7 +155,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/tmp/tmp.kb37QezJrY",
+    "path": "/tmp/tmp.ly6eF97ART",
     "source": "nearest"
   }
 }

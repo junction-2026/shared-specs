@@ -5,6 +5,7 @@ junction-2026/project#80: the History list (`GET /api/v1/jobs`) can be filtered 
 ## What Changes
 
 - `analysis-jobs-api` "List jobs" (MODIFIED): names the optional `language` filter and the JobSummary `language` member.
+- `analysis-jobs-api` "Job country association member" (MODIFIED, archived by project#75): the sentence "JobSummary items are unchanged" now says JobSummary items do not carry `country_association`, so it doesn't contradict the new `language` member. The rest is unchanged.
 - New requirements in `analysis-jobs-api`:
   - "Job list language filter": optional query parameter `language` (two-letter ISO 639-1 code, or `unknown`), case-insensitive after trimming; any other non-empty value yields 400 `invalid_request`.
   - "Job list language paging": `language` combines with `q`, `status` and the public-only rule (all must hold), is applied before paging, and clients following `next_cursor` send the same parameters.

@@ -5,105 +5,105 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 47
+      "durationMs": 17
     },
     {
       "id": "analysis-job-events",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 29
+      "durationMs": 9
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 22
+      "durationMs": 7
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 1
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 0
     },
     {
       "id": "bot-detection-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 12
+      "durationMs": 4
     },
     {
       "id": "country-association",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 11
+      "durationMs": 3
     },
     {
       "id": "fact-check-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 2
     },
     {
       "id": "history-language-filter",
       "type": "change",
       "valid": true,
       "issues": [],
-      "durationMs": 161
+      "durationMs": 61
     },
     {
       "id": "job-text-localization",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 2
     },
     {
       "id": "llm-technique-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 1
     },
     {
       "id": "manipulation-risk-score",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 13
+      "durationMs": 6
     },
     {
       "id": "news-search-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 4
     },
     {
       "id": "propaganda-map-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 3
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 4
+      "durationMs": 2
     },
     {
       "id": "source-info-result",
@@ -117,28 +117,28 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 19
+      "durationMs": 7
     },
     {
       "id": "term-context-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 14
+      "durationMs": 5
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 10
+      "durationMs": 3
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 7
+      "durationMs": 3
     }
   ],
   "summary": {
@@ -162,7 +162,7 @@
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/345254a5-f835-4168-ba0f-e28b2be368e7",
+    "path": "/srv/junction/worktrees/shared-specs/6d64e323-6fd4-4398-a77d-033bc332b79f",
     "source": "nearest"
   }
 }
