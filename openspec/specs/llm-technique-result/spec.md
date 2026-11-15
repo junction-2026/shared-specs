@@ -17,7 +17,7 @@ A deployment that offers LLM technique detection SHALL register it as a regular,
 - **THEN** `llm_techniques` is `skipped` with reason `dependency_failed`, `result: null`, and no LLM request is sent
 
 ### Requirement: LLM technique labels
-The analyzer SHALL look only for, and emit only, these labels: `evidence_certainty_mismatch` (a claim is stated with more certainty than the evidence in the text supports), `misleading_headline` (the headline states or implies something the body does not support) and `statistical_cherry_picking` (numbers are selected to support a conclusion the fuller data would not).
+The analyzer SHALL look only for, and emit only, these labels: `evidence_certainty_mismatch` (a contested, causal or sweeping claim is presented as certain without evidence; see "Evidence certainty mismatch scope"), `misleading_headline` (the headline states or implies something the body does not support) and `statistical_cherry_picking` (numbers are selected to support a conclusion the fuller data would not).
 
 #### Scenario: Unknown label from the LLM
 - **WHEN** the LLM answers with a finding labelled `fabricated_authority`
@@ -105,11 +105,15 @@ The analyzer SHALL send the LLM `Job.input.content` (up to the deployment's inpu
 - **THEN** the LLM request carries the German content and no text of `translated_text`
 
 ### Requirement: LLM finding filtering
-Findings whose `confidence` is below the deployment's minimum confidence (default 0.5) or outside 0 to 1 SHALL be dropped. At most the deployment's per-label limit (default 5) findings per label SHALL be kept, highest `confidence` first; dropping beyond it sets `truncated: true`.
+Findings whose `confidence` is below the deployment's minimum confidence (default 0.6) or outside 0 to 1 SHALL be dropped. At most the deployment's per-label limit (default 5) findings per label SHALL be kept, highest `confidence` first; dropping beyond it sets `truncated: true`.
 
 #### Scenario: Low confidence dropped
-- **WHEN** the LLM rates an `evidence_certainty_mismatch` finding with confidence 0.3 and the default minimum applies
+- **WHEN** the LLM rates an `evidence_certainty_mismatch` finding with confidence 0.5 and the default minimum applies
 - **THEN** that finding is not in `findings`
+
+#### Scenario: Default minimum kept
+- **WHEN** the LLM rates an `evidence_certainty_mismatch` finding with confidence 0.6 and the default minimum applies
+- **THEN** that finding is in `findings`
 
 ### Requirement: LLM finding order
 `findings` SHALL be ordered by label in the order of the LLM technique labels requirement, then by `field` (`title` before `content`), then `start`, then `end`.
@@ -145,3 +149,14 @@ Clients SHALL render span `text`, `name`, `definition` and `explanation` as plai
 #### Scenario: Offsets do not match
 - **WHEN** a finding's span `text` differs from `Job.input.content.slice(start, end)`
 - **THEN** the client lists the finding without a highlight
+
+### Requirement: Evidence certainty mismatch scope
+The analyzer SHALL ask for `evidence_certainty_mismatch` only where the text presents a contested, causal or sweeping claim as certain ("proves", "definitely", "everyone knows", "there is no doubt", "the real reason is") while giving no evidence or only an anecdote. Reporting events, figures or statements attributed to a named source, quoting someone's certainty, and the ordinary declarative style of news reports SHALL NOT be described to the LLM as a mismatch.
+
+#### Scenario: Attributed news sentence
+- **WHEN** the analyzer is asked about "The ministry said 40 people were killed in the strike on Tuesday."
+- **THEN** the LLM request's instructions define this kind of attributed reporting as not an `evidence_certainty_mismatch`
+
+#### Scenario: Unsupported certainty
+- **WHEN** the analyzer is asked about "This definitely proves the vaccine was designed to harm us."
+- **THEN** the LLM request's instructions define this kind of claim as an `evidence_certainty_mismatch`
