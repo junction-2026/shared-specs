@@ -6,6 +6,8 @@ Canonical `analysis-jobs-api` (shared-specs @ 00fc92e) defines the job list at `
 
 The parallel feature project#76 (`ui-audit-responsive-fixes`) is frontend-local (`results-history-views` layout); it has no shared change and does not affect this contract.
 
+The parallel feature project#81 (`fix-summary-card-explore-filters`) is frontend-local too (`i18n`, detailed-summary card, Explore coverage filter bar); it has no shared change and does not affect this contract. Both features add or remove keys in the frontend catalogs: this feature adds keys only under the `history` namespace and leaves the `results`/`explore` keys that #81 changes alone.
+
 ## Goals / Non-Goals
 
 Goals: a single-select `language` filter for `GET /api/v1/jobs`, matching and paging rules identical in style to `q`/`status`, and a JobSummary member showing the same value.
