@@ -39,7 +39,13 @@ Based on backend @ 83ad8c3884aab99fdc94919b89784f8eb004a2fc, frontend @ 162d44f4
 
 ## Overlap with active changes
 
-- `ai-country-association` (#75) adds `Job.country_association` in analysis-jobs-api; this change touches FinalAssessment and retry requirements only. No shared requirement overlap; `base_changes: []`.
+`ai-country-association` (junction-2026/project#75, IMPLEMENTING; shared-specs @ 24b7969236d03059dd6447481c27afd541fcac7e) runs in parallel with this change on `analysis-jobs-api` and backend `analyzer-adapters`. Checked against its deltas:
+
+- **analysis-jobs-api:** it adds only "Job country association member" (`openspec/changes/ai-country-association/specs/analysis-jobs-api/spec.md:3`). This change adds FinalAssessment / finalizer-retry requirements and modifies "LLM reply retry members". No requirement is touched by both; the two deltas apply in either archive order.
+- **Detected propaganda:** its step runs for jobs with detected propaganda as propaganda-map-api defines it, from the `techniques` detections (`country-association/spec.md:6-15`), not from the finalizer verdict. Rule 1 of #79 (fewer `detected` verdicts) therefore does not change when country association runs or which jobs are map analyses.
+- **Inputs:** it reads `translation` `source_language` (`country-association/spec.md:22`). This change does not change the `translation` result; "always send `<source_language>`, `en` when absent" is only the finalizer's request.
+- **Backend code:** both backend tasks touch `internal/adapter` (its LLM step can reuse the OpenAI-compatible client in `internal/adapter/llm.go`). The backend task of this change keeps the signature and behaviour of `adapter.LLM` / `llmChat` for every caller other than the finalizer and adds the language check as a finalizer-only option, so the country association code builds unchanged on either order of merge. Neither change edits the other's prompt or config files.
+- Neither change modifies the other's change directory; `base_changes: []`.
 
 ## Risks
 
