@@ -1,7 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: List jobs
-`GET /api/v1/jobs` SHALL return only jobs with `public: true`, newest first (by `created_at`, ties by `id`), with cursor pagination, an optional `status` filter (unknown value: 400 `invalid_request`), an optional search `q` and an optional `language` filter. Each item SHALL be a JobSummary with at least `id`, `status`, `done`, `created_at`, `finished_at`, `coverage`, `excerpt`, `language` and `finalization` as `{"status", "verdict"}`, `verdict` being the FinalAssessment verdict or null.
+`GET /api/v1/jobs` SHALL return only jobs with `public: true` (Listing excludes non-public jobs), newest first (by `created_at`, ties by `id`), with cursor pagination and the optional filters `status` (unknown value: 400 `invalid_request`), `q` and `language`. Each item SHALL be a JobSummary with at least `id`, `status`, `done`, `created_at`, `finished_at`, `coverage`, `excerpt`, `language` and `finalization` as `{"status", "verdict"}`, `verdict` being the FinalAssessment verdict or null.
 
 #### Scenario: Filter by status
 - **WHEN** a client calls `GET /api/v1/jobs?status=running`

@@ -1,8 +1,10 @@
 ## Context
 
-Canonical `analysis-jobs-api` (shared-specs @ d654f43) defines the job list at `specs/analysis-jobs-api/spec.md:171-180` ("List jobs"), the public-only rule at `:624-634`, search at `:661-719` and the JobSummary `excerpt` at `:721-745`. Pagination is `api-conventions/spec.md:40-49`; tolerant readers `api-conventions/spec.md:51-61`. The job's language is defined only as the binding source `$job.source_language` (`analyzer-service-protocol/spec.md:126-139`): the succeeded `translation` result's `source_language`, trimmed and lower-cased, when it matches `^[a-z]{2}$`, otherwise null. The backend implements that rule as `adapter.JobSourceLanguage` (backend @ 881c056, `internal/adapter/adapter.go:134`).
+Canonical `analysis-jobs-api` (shared-specs @ 00fc92e) defines the job list at `specs/analysis-jobs-api/spec.md:171-180` ("List jobs"), the public-only rule at `:624-634`, search at `:661-719` and the JobSummary `excerpt` at `:721-745`. Pagination is `api-conventions/spec.md:40-49`; tolerant readers `api-conventions/spec.md:51-61`; the persisted listing `analysis-jobs-api/spec.md:519`. The job's language is defined only as the binding source `$job.source_language` (`analyzer-service-protocol/spec.md:126-139`): the succeeded `translation` result's `source_language`, trimmed and lower-cased, when it matches `^[a-z]{2}$`, otherwise null. The backend implements that rule as `adapter.JobSourceLanguage` (backend @ cbbecf1, `internal/adapter/adapter.go:134-135`).
 
-The active change `ai-country-association` (another feature) modifies `analysis-jobs-api` only by adding the Job member `country_association`; it does not touch "List jobs", JobSummary or the listing filters, so this change does not build on it and does not conflict with it.
+`ai-country-association` (project#75) has been archived into canonical `analysis-jobs-api` (shared-specs @ 00fc92e); it added only the Job member `country_association` (`analysis-jobs-api/spec.md:797`, which states JobSummary items are unchanged) and reworded "List jobs" to cite "Listing excludes non-public jobs". This change's MODIFIED "List jobs" is written against that canonical text. No other active shared change touches `analysis-jobs-api`, so `base_changes` is empty.
+
+The parallel feature project#76 (`ui-audit-responsive-fixes`) is frontend-local (`results-history-views` layout); it has no shared change and does not affect this contract.
 
 ## Goals / Non-Goals
 
@@ -22,9 +24,9 @@ Non-goals: language detection changes, re-analysis, multi-select, filtering by U
 
 | Item | Uses in canonical specs | Class |
 |---|---|---|
-| `GET /api/v1/jobs` query parameter `language` | `analysis-jobs-api/spec.md:172` (List jobs), `:625` (Listing excludes non-public jobs), `:707` (search paging) | shared-additive: new optional parameter; requests without it are answered as today |
-| 400 `invalid_request` for a malformed `language` | `api-conventions/spec.md:32` | shared-additive: existing code on a new condition that only arises with the new parameter |
-| JobSummary member `language` | JobSummary is defined only at `analysis-jobs-api/spec.md:172` and used only by `GET /api/v1/jobs`; not part of the Job object, events (`analysis-job-events`) or the map (`propaganda-map-api`) | shared-additive: new optional member (api-conventions "Tolerant reader for objects") |
+| `GET /api/v1/jobs` query parameter `language` | `analysis-jobs-api/spec.md:172` (List jobs), `:519` (persisted listing), `:624` (Listing excludes non-public jobs), `:706` (search paging) | shared-additive: new optional parameter; requests without it are answered as today |
+| 400 `invalid_request` for a malformed `language` | `api-conventions/spec.md:30` | shared-additive: existing code on a new condition that only arises with the new parameter |
+| JobSummary member `language` | JobSummary is defined at `analysis-jobs-api/spec.md:172` (members also at `:215`, `:721-745`) and used only by `GET /api/v1/jobs` (`:519` persisted listing); `:797` keeps JobSummary unchanged by `country_association`; not part of the Job object, events (`analysis-job-events`) or the map (`propaganda-map-api`) | shared-additive: new optional member (api-conventions "Tolerant reader for objects") |
 | "List jobs" requirement text | `analysis-jobs-api/spec.md:171-180` | rewritten in the same at-least style; obligations for existing parameters and members unchanged |
 
 No breaking change; no client migration is required. Existing frontend (`src/api/client.ts` `listJobs`, `src/api/types.ts` `JobSummary`) keeps working unmodified.

@@ -10,5 +10,5 @@
 
 ## 3. frontend (child `frontend-history-language`)
 - [ ] 3.1 `listJobs` `language` parameter; `JobSummary.language?: string | null`
-- [ ] 3.2 History language filter control (fixed list plus unknown), URL state, paging reset, export with the filter
+- [ ] 3.2 History language filter control (fixed list plus unknown), `/history` URL state for status, q and language, paging reset, export with the filter; coordinated with the parallel project#76 `ui-audit-responsive-fixes` (frontend-local)
 - [ ] 3.3 Item language label; locale strings in all UI locales; tests

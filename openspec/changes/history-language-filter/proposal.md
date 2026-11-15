@@ -27,4 +27,4 @@ junction-2026/project#80: the History list (`GET /api/v1/jobs`) can be filtered 
 - frontend: API client `language` parameter and `JobSummary.language`; History language filter control kept in the URL with the other filters.
 - No new endpoint; the UI offers a fixed list of common languages plus `unknown`.
 
-Based on backend @ 881c056588bf5b1057bd05c58925c4a375928f0c, frontend @ c0db797fa2558441374a77b1a90bae1a2b4ec72b, project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ d654f43a7c0d3546b6a31caa764705f461c3c590.
+Based on backend @ cbbecf18f950584e1c3671ccf553f83d9f495680, frontend @ 2d50821063974c153529d02e21c058aec271b30e, project @ 441ecbf96961128099af004da50a063f18b3345c, shared-specs @ 00fc92ea48cf68a65b189995ddd4cbffe96a48b5. Runs in parallel with project#76 (frontend-local `ui-audit-responsive-fixes`), which has no shared change.
