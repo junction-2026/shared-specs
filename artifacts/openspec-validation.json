@@ -1,53 +1,39 @@
 {
   "items": [
     {
-      "id": "ai-country-association",
-      "type": "change",
-      "valid": true,
-      "issues": [],
-      "durationMs": 145
-    },
-    {
       "id": "analysis-chat-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 34
+      "durationMs": 17
     },
     {
       "id": "analysis-job-events",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 15
+      "durationMs": 9
     },
     {
       "id": "analysis-jobs-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 11
-    },
-    {
-      "id": "analysis-text-precision",
-      "type": "change",
-      "valid": true,
-      "issues": [],
-      "durationMs": 154
+      "durationMs": 7
     },
     {
       "id": "analyzer-service-protocol",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 1
     },
     {
       "id": "api-conventions",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 5
+      "durationMs": 0
     },
     {
       "id": "bot-detection-result",
@@ -57,32 +43,46 @@
       "durationMs": 4
     },
     {
-      "id": "fact-check-result",
+      "id": "country-association",
       "type": "spec",
       "valid": true,
       "issues": [],
       "durationMs": 3
     },
     {
+      "id": "fact-check-result",
+      "type": "spec",
+      "valid": true,
+      "issues": [],
+      "durationMs": 2
+    },
+    {
+      "id": "history-language-filter",
+      "type": "change",
+      "valid": true,
+      "issues": [],
+      "durationMs": 61
+    },
+    {
       "id": "job-text-localization",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 1
+      "durationMs": 2
     },
     {
       "id": "llm-technique-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 9
+      "durationMs": 1
     },
     {
       "id": "manipulation-risk-score",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 7
+      "durationMs": 6
     },
     {
       "id": "news-search-result",
@@ -96,21 +96,21 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 3
     },
     {
       "id": "social-scraper-api",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 10
+      "durationMs": 2
     },
     {
       "id": "source-info-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 1
     },
     {
       "id": "technique-classifier-result",
@@ -124,21 +124,21 @@
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 2
+      "durationMs": 5
     },
     {
       "id": "topic-extraction-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 8
+      "durationMs": 3
     },
     {
       "id": "wikipedia-lookup-result",
       "type": "spec",
       "valid": true,
       "issues": [],
-      "durationMs": 6
+      "durationMs": 3
     }
   ],
   "summary": {
@@ -149,20 +149,20 @@
     },
     "byType": {
       "change": {
-        "items": 2,
-        "passed": 2,
+        "items": 1,
+        "passed": 1,
         "failed": 0
       },
       "spec": {
-        "items": 18,
-        "passed": 18,
+        "items": 19,
+        "passed": 19,
         "failed": 0
       }
     }
   },
   "version": "1.0",
   "root": {
-    "path": "/srv/junction/worktrees/shared-specs/7f7a817f-b596-4919-ae3c-310cefcfa9f7",
+    "path": "/srv/junction/worktrees/shared-specs/6d64e323-6fd4-4398-a77d-033bc332b79f",
     "source": "nearest"
   }
 }
